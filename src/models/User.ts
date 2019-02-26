@@ -1,8 +1,8 @@
 class User {
-  constructor() {}
-  findOrCreate(googleauth: any, funktio: any) {
-    null
+  findOrCreate = (eka: any, toka: any) => {
+    console.log(eka)
+    console.log(toka)
   }
 }
 
-export default User;
+export default User
