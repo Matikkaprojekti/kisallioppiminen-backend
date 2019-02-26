@@ -6,7 +6,7 @@ import { LoginController } from './controllers'
 import cp from 'cookie-parser'
 
 const app = express()
-const port = process.env.PORT || 8000
+const port = process.env.APP_PORT || 8000
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
