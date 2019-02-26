@@ -1,4 +1,8 @@
 import { Router, Request, Response } from 'express'
+import { RequestError } from 'request-promise/errors';
+import passport from 'passport'
+import User from '../models/User'
+// import { Strategy } from 'passport-google-oauth20'
 
 const router: Router = Router()
 
