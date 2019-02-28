@@ -1,5 +1,4 @@
 import { Router, Request, Response } from 'express'
-import { RequestError } from 'request-promise/errors'
 import passport from 'passport'
 import User from '../models/User'
 // import { Strategy } from 'passport-google-oauth20'
@@ -9,18 +8,12 @@ import GoogleStrategy from 'passport-google-oauth20'
 
 const router: Router = Router()
 
-const findOrCreate = (eka: any, toka: any) => {
-  console.log(eka)
-  console.log(toka)
-}
-
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: 'http://localhost:8000/users/auth/callback'
+  callbackURL: `${process.env.NODE_ENV === 'dev' ? 'http://localhost:8000' : process.env.PROD_URL}/users/auth/callback`
   },
   (accessToken: any, refreshToken: any, profile: any, cb: any) => {
-    console.log(profile)
     const user = new User()
     user.findOrCreate({ googleId: profile.id }, (err: any, user: any) => {
       return cb(err, user)
@@ -29,7 +22,6 @@ passport.use(new GoogleStrategy({
 ))
 
 router.get('/auth', passport.authenticate('google', { scope: ['profile'] }), (req: Request, res: Response) => {
-  // passport.authenticate('google', { scope: ['profile'] })
   res.send('Authenticated')
 })
 
