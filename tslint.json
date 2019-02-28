@@ -12,7 +12,20 @@
     "max-line-length": [true, 200],
     "interface-name": false,
     "arrow-parens": false,
-    "indent": [true, "spaces", 2]
+    "indent": [true, "spaces", 2],
+    "no-shadow": [false, "allow"],
+    "no-shadowed-variable": [
+      false,
+      {
+        "class": false,
+        "enum": true,
+        "function": true,
+        "interface": false,
+        "namespace": true,
+        "typeAlias": false,
+        "typeParameter": false
+      }
+    ]
   },
   "rulesDirectory": []
 }
