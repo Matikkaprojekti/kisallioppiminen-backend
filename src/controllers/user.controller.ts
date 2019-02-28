@@ -14,16 +14,4 @@ router.get('/:id', (req: Request, res: Response) => {
   res.json({ error: 'user not found' })
 })
 
-// Create a user
-router.post('/', async (req: Request, res: Response) => {
-  const name = req.body.name
-  const googleid = req.body.googleid
-
-  const id = await database('users').insert({ name, googleid }, 'id')
-
-  const user = await database('users').select('*')
-
-  res.json({ user })
-})
-
 export const LoginController: Router = router
