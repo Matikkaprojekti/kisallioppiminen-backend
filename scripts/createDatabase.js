@@ -7,7 +7,8 @@ async function createDatabase() {
     user: process.env.DATABASE_USER,
     host: process.env.DATABASE_URL,
     password: process.env.DATABASE_PASSWORD,
-    port: process.env.DATABASE_PORT
+    port: process.env.DATABASE_PORT,
+    database: 'postgres'
   })
 
   await client.connect()
