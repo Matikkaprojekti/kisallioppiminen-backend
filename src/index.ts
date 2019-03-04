@@ -5,10 +5,12 @@ import bodyParser from 'body-parser'
 import { LoginController } from './controllers'
 import cp from 'cookie-parser'
 import expressSession from 'express-session'
+import cors from 'cors'
 
 const app = express()
 const port = process.env.APP_PORT || 8000
 
+app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cp())

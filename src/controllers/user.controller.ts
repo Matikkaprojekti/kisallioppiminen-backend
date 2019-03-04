@@ -10,10 +10,12 @@ const router: Router = Router()
 router.use(passport.initialize())
 router.use(passport.session())
 
+const port = process.env.APP_PORT || 8000
+
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: `${process.env.NODE_ENV === 'dev' ? 'http://localhost:8000' : process.env.PROD_URL}/users/auth/callback`
+  callbackURL: `${process.env.NODE_ENV === 'dev' ? `http://localhost:${port}` : process.env.PROD_URL}/users/auth/callback`
   },
   (accessToken: any, refreshToken: any, profile: {id: number, name: {familyName: string, givenName: string}}, cb: any) => {
     findOrCreate({ googleId: profile.id, name: profile.name.givenName })
@@ -47,7 +49,7 @@ router.get('/auth', passport.authenticate('google', { scope: ['profile'] }), (re
 router.get('/auth/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),
   (req, res) => {
-    res.redirect('/')
+    res.redirect(`http://localhost:${port}`)
   })
 
 // Get all users
