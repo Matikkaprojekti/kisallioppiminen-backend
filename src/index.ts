@@ -8,7 +8,7 @@ import expressSession from 'express-session'
 import { passportInitializer } from './passport'
 
 const app = express()
-const port = process.env.APP_PORT || 8000
+const port = process.env.PORT || 8000
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
