@@ -11,7 +11,10 @@
     "resolveJsonModule": true,
     "paths": {
       "*": ["node_modules/*"]
-    }
+    },
+    "typeRoots": [
+      "./src/types"
+    ]
   },
   "include": ["src/**/*"]
 }

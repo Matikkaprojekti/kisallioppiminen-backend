@@ -1,4 +1,4 @@
-import GoogleStrategy from 'passport-google-oauth20'
+const GoogleStrategy = require('passport-google-oauth20') // tslint:disable-line
 import User from './models/User'
 import passport from 'passport'
 import { findOrCreate, findUserById } from './services/userService'
