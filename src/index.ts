@@ -5,23 +5,27 @@ import bodyParser from 'body-parser'
 import { LoginController } from './controllers'
 import cp from 'cookie-parser'
 import expressSession from 'express-session'
+import { fetchUser } from './middlewares/userAuthmiddleware'
 
 const app = express()
 const port = process.env.APP_PORT || 8000
 
+app.use(fetchUser)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cp())
-app.use(expressSession({
-  secret: 'paska',
-  resave: true,
-  saveUninitialized: true
-}))
+app.use(
+  expressSession({
+    secret: 'paska',
+    resave: true,
+    saveUninitialized: true
+  })
+)
 
 app.use('/users', LoginController)
 
 app.get('/', (req, res) => {
-  console.log(req)
+  // console.log(req)
   res.json({
     message: 'Hello world'
   })
