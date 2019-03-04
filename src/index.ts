@@ -2,9 +2,10 @@ import dotenv from 'dotenv'
 dotenv.config()
 import express from 'express'
 import bodyParser from 'body-parser'
-import { LoginController } from './controllers'
+import { UserController } from './controllers'
 import cp from 'cookie-parser'
 import expressSession from 'express-session'
+import { passportInitializer } from './passport'
 
 const app = express()
 const port = process.env.APP_PORT || 8000
@@ -12,13 +13,15 @@ const port = process.env.APP_PORT || 8000
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cp())
-app.use(expressSession({
-  secret: 'paska',
-  resave: true,
-  saveUninitialized: true
-}))
-
-app.use('/users', LoginController)
+app.use(
+  expressSession({
+    secret: 'paska',
+    resave: true,
+    saveUninitialized: true
+  })
+)
+passportInitializer(app)
+app.use('/users', UserController)
 
 app.get('/', (req, res) => {
   console.log(req)
