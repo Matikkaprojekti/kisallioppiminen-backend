@@ -8,5 +8,5 @@
 
 | Metodi(t) | URL                       |
 | --------| --------------------------- |
-| GET/POST     | `/users`  |
-| GET          | `/users/id`  |
+| GET     | `/users/auth`               |
+| GET     | `/users/me`                 |
