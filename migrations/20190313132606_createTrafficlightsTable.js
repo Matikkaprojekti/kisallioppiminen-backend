@@ -15,7 +15,7 @@ exports.up = function(knex, Promise) {
 exports.down = function(knex, Promise) {
   return knex.schema.hasTable('trafficlights').then(exists => {
     if (exists) {
-      knex.schema.droptable('trafficlights')
+      return knex.raw('DROP TABLE trafficlights CASCADE')
     }
   })
 }

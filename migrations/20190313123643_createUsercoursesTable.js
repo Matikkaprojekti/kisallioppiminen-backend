@@ -1,7 +1,7 @@
 exports.up = function(knex, Promise) {
-  return knex.schema.hasTable('usercourses').then(function(exists) {
+  return knex.schema.hasTable('userscourses').then(function(exists) {
     if (!exists) {
-      return knex.schema.createTable('usercourses', function(table) {
+      return knex.schema.createTable('userscourses', function(table) {
         table.integer('user_id')
         table.string('course_coursekey')
         table.foreign('user_id').references('users.id')
@@ -13,9 +13,9 @@ exports.up = function(knex, Promise) {
 }
 
 exports.down = function(knex, Promise) {
-  return knex.schema.hasTable('usercourses').then(exists => {
+  return knex.schema.hasTable('userscourses').then(exists => {
     if (exists) {
-      knex.schema.dropTable('usercourses')
+      return knex.raw('DROP TABLE userscourses CASCADE')
     }
   })
 }

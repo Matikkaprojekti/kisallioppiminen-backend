@@ -6,6 +6,14 @@ exports.up = function(knex, Promise) {
         table.string('coursekey')
         table.foreign('coursekey').references('courses.coursekey')
         table.primary('uuid')
+        table
+          .string('firstname')
+          .notNull()
+          .defaultTo('undefined')
+        table
+          .string('lastname')
+          .notNull()
+          .defaultTo('undefined')
       })
     }
   })
@@ -13,8 +21,8 @@ exports.up = function(knex, Promise) {
 
 exports.down = function(knex, Promise) {
   return knex.schema.hasTable('exercises').then(exists => {
-    if (exits) {
-      knex.schema.dropTable('exercises')
+    if (exists) {
+      return knex.raw('DROP TABLE exercises CASCADE')
     }
   })
 }
