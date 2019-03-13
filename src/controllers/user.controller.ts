@@ -11,7 +11,7 @@ router.get('/auth', passport.authenticate('google', { scope: ['profile'] }), (re
 })
 
 router.get('/auth/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
-  res.redirect('/')
+  res.redirect(process.env.NODE_ENV === 'dev' ? 'http://localhost:3000' : process.env.PROD_URL)
 })
 
 // Get all users
