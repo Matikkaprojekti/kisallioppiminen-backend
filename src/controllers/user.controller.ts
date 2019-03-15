@@ -11,6 +11,7 @@ router.get('/auth', passport.authenticate('google', { scope: ['profile'] }), (re
 })
 
 router.get('/auth/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
+  res.append('Set-Cookie', req.get('set-cookie').join(';'))
   res.redirect(process.env.NODE_ENV === 'dev' ? 'http://localhost:3000' : process.env.FRONTEND_URL)
 })
 
