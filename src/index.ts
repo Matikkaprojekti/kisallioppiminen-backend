@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cp())
 app.use(
   expressSession({
-    cookie: {domain: process.env.COOKIE_DOMAIN},
+    cookie: {domain: process.env.COOKIE_DOMAIN, secure: true},
     secret: 'paska',
     resave: true,
     saveUninitialized: true
