@@ -31,7 +31,6 @@ export const passportInitializer = (app: any) => {
 
   passport.deserializeUser((id: number, done: any) => {
     findUserById(id).then((user: any) => {
-      console.log('asd', user)
       if (!user) {
         return done(new Error('Unauthorized'), null)
       }
