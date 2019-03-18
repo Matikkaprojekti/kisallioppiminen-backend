@@ -1,9 +1,11 @@
 exports.up = function(knex, Promise) {
-  return knex.schema.hasTable('courses').then(function(exists) {
+  return knex.schema.hasTable('teachinginstances').then(function(exists) {
     if (!exists) {
-      return knex.schema.createTable('courses', function(table) {
+      return knex.schema.createTable('teachinginstances', function(table) {
         table.string('coursekey')
         table.string('courseinfo')
+        table.string('coursematerial_name')
+        table.float('coursematerial_version')
         table.string('name').notNull()
         table.date('startdate').notNull()
         table.date('enddate').notNull()
@@ -14,9 +16,9 @@ exports.up = function(knex, Promise) {
 }
 
 exports.down = function(knex, Promise) {
-  return knex.schema.hasTable('courses').then(exists => {
+  return knex.schema.hasTable('teachinginstances').then(exists => {
     if (exists) {
-      return knex.raw('DROP TABLE courses CASCADE')
+      return knex.raw('DROP TABLE teachinginstances CASCADE')
     }
   })
 }

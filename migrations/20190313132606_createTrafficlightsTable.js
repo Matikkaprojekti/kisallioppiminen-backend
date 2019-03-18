@@ -3,10 +3,12 @@ exports.up = function(knex, Promise) {
     if (!exists) {
       return knex.schema.createTable('trafficlights', function(table) {
         table.string('exercise_uuid')
+        table.string('coursekey')
         table.enum('status', ['green', 'yellow', 'red'])
         table.integer('user_id')
         table.foreign('exercise_uuid').references('exercises.uuid')
-        table.primary(['exercise_uuid', 'user_id'])
+        table.foreign('coursekey').references('teachinginstances.coursekey')
+        table.primary(['exercise_uuid', 'user_id', 'coursekey'])
       })
     }
   })

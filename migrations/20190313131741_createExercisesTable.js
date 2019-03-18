@@ -4,7 +4,7 @@ exports.up = function(knex, Promise) {
       return knex.schema.createTable('exercises', function(table) {
         table.string('uuid')
         table.string('coursekey')
-        table.foreign('coursekey').references('courses.coursekey')
+        table.foreign('coursekey').references('teachinginstances.coursekey')
         table.primary('uuid')
         table
           .string('firstname')
