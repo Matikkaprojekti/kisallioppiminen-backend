@@ -23,7 +23,7 @@ app.use(
 )
 passportInitializer(app)
 app.use('/users', UserController)
-app.use('/courseinstances', TeachingInstanceController)
+app.use('/teachinginstances', TeachingInstanceController)
 
 app.get('/', (req, res) => {
   console.log(req)
