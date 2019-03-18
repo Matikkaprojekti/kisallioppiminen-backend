@@ -11,7 +11,8 @@
 
 ### Tarjolla olevat urlit:
 
-| Metodi(t) | URL                       |
-| --------| --------------------------- |
-| GET     | `/users/auth`               |
-| GET     | `/users/me`                 |
+| Metodi(t) | URL                       | Kuvaus |
+| --------| --------------------------- |---------------------------------------|
+| GET     | `/users/auth`               | Authentikoi käyttäjän                 |
+| GET     | `/users/me`                 | Hakee kirjautuneen käyttäjän tiedot   |
+| POST    | `/courseinstances`         |Luo uuden opetusinstanssin              |
