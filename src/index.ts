@@ -2,7 +2,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 import express from 'express'
 import bodyParser from 'body-parser'
-import { UserController } from './controllers'
+import { UserController, TeachingInstanceController } from './controllers'
 import cp from 'cookie-parser'
 import expressSession from 'express-session'
 import { passportInitializer } from './passport'
@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cp())
 app.use(
   expressSession({
-    cookie: {domain: process.env.COOKIE_DOMAIN},
+    cookie: { domain: process.env.COOKIE_DOMAIN },
     secret: 'paska',
     resave: true,
     saveUninitialized: true
@@ -23,6 +23,7 @@ app.use(
 )
 passportInitializer(app)
 app.use('/users', UserController)
+app.use('/teachinginstances', TeachingInstanceController)
 
 app.get('/', (req, res) => {
   console.log(req)
