@@ -1,11 +1,11 @@
 const GoogleStrategy = require('passport-google-oauth20') // tslint:disable-line
 import User from './models/User'
 import passport from 'passport'
+import {Strategy as JWTStrategy, ExtractJwt} from 'passport-jwt'
 import { findOrCreate, findUserById } from './services/userService'
 
 export const passportInitializer = (app: any) => {
   app.use(passport.initialize())
-  app.use(passport.session())
   passport.use(
     new GoogleStrategy(
       {
@@ -24,6 +24,18 @@ export const passportInitializer = (app: any) => {
       }
     )
   )
+  passport.use(new JWTStrategy({
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: process.env.JWT_SECRET,
+  }, ({userId}, done) => {
+    findUserById(userId)
+      .then(user => {
+        done(null, user)
+      })
+      .catch(e => {
+        done(e, null)
+      })
+  }))
 
   passport.serializeUser(({ id }: User, done: any) => {
     done(null, id)
