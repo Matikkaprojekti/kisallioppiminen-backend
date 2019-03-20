@@ -6,9 +6,10 @@
 3. Kopioi .env.example -> .env ja täytä kentät
 4. `npm install`
 5. node_modules/.bin/knex init
-6. node_modules/.bin/knex migrate:latest
-7. `npm run watch`
-8. Testaa lokaalin backendin toimivuus menemällä [tänne](http://localhost:8000/)
+6. Luodaan tietokanta komennolla node scripts/createDatabase.js
+7. node_modules/.bin/knex migrate:latest
+8. `npm run watch`
+9. Testaa lokaalin backendin toimivuus menemällä [tänne](http://localhost:8000/)
 
 ### Tietokannan kuvaus:
 
