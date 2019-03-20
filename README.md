@@ -1,9 +1,14 @@
 # kisallioppiminen-backend
 
 ### Ohjeet backendin lokaaliin devauskäyttöön:
-
-1. `git clone git@github.com:Matikkaprojekti/kisallioppiminen-backend.git && cd kisallioppiminen-backend/ && npm install && npm run watch`
-2. Testaa lokaalin backendin toimivuus menemällä [tänne](http://localhost:8000/)
+1. Asenna postgresql ja luo postgresql käyttäjä
+2. `git clone git@github.com:Matikkaprojekti/kisallioppiminen-backend.git && cd kisallioppiminen-backend/`
+3. Kopioi .env.example -> .env ja täytä kentät
+4. `npm install`
+5. node_modules/.bin/knex init
+6. node_modules/.bin/knex migrate:latest
+7. `npm run watch`
+8. Testaa lokaalin backendin toimivuus menemällä [tänne](http://localhost:8000/)
 
 ### Tietokannan kuvaus:
 
