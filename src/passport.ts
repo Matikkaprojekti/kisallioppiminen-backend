@@ -1,7 +1,7 @@
 const GoogleStrategy = require('passport-google-oauth20') // tslint:disable-line
 import User from './models/User'
 import passport from 'passport'
-import { findOrCreate, findUserById } from './services/userService'
+import { findOrCreateUser, findUserById } from './services/userService'
 
 export const passportInitializer = (app: any) => {
   app.use(passport.initialize())
@@ -14,7 +14,7 @@ export const passportInitializer = (app: any) => {
         callbackURL: `${process.env.NODE_ENV === 'dev' ? 'http://localhost:8000' : process.env.PROD_URL}/users/auth/callback`
       },
       (accessToken: any, refreshToken: any, profile: { id: number; name: { familyName: string; givenName: string } }, cb: any) => {
-        findOrCreate({ googleId: profile.id, name: profile.name.givenName })
+        findOrCreateUser({ googleId: profile.id, name: profile.name.givenName })
           .then((result: any) => {
             return cb(null, result)
           })
