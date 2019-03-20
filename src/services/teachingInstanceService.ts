@@ -1,7 +1,7 @@
 import database from '../database'
 import Teachinginstance from '../models/TeachingInstance'
 
-export async function findOrCreate(newTeachingInstance: Teachinginstance): Promise<Teachinginstance> {
+export async function findOrCreateTeachinginstance(newTeachingInstance: Teachinginstance): Promise<Teachinginstance> {
   const instance = await database('teachinginstances')
     .select()
     .where({ coursekey: newTeachingInstance.coursekey })
@@ -19,4 +19,17 @@ export async function findOrCreate(newTeachingInstance: Teachinginstance): Promi
   }
 
   return instance
+}
+
+export async function findTeachinginstanceByCoursekey(coursekey: string): Promise<Teachinginstance | null> {
+  const instance = await database('teachinginstances')
+    .select('*')
+    .where({ coursekey })
+    .first()
+
+  if (instance) {
+    return instance
+  } else {
+    return undefined
+  }
 }
