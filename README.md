@@ -60,6 +60,50 @@ Response body format:
 }
 ```
 
+----------
+#### GET `/teachinginstances/`
+teacher(false) = palautetaan opiskelijan omat kurssit. teacher(true) = palautetaan scoreboard.
+Request body format: 
+```json
+{
+	"user_id":3,
+	"teacher":true/false
+}
+```
+Response body format:
+```json
+{
+    "coursekey": "uusitesti",
+    "courseinfo": "Juuh elikkäs joo...",
+    "coursematerial_name": "MAY2",
+    "version": "Kissalan lukio",
+    "name": "Kissalan matikka 2019",
+    "startdate": "2019-12-27T22:00:00.000Z",
+    "enddate": "2030-01-29T22:00:00.000Z",
+    "owner_id":3
+	"students":[
+		"firstname:"Kissa",
+		"lastname:"Ankka",
+		"exercises":[
+			"uuid":"123123-123123-123-123-1123123,
+			"status":"red",
+			"uuid":"asd1213-123123-123-123-1123123,
+			"status":"green",
+		],
+		"firstname:"Peter",
+		"lastname:"Pan",
+		"exercises":[
+			"uuid":"123123-123123-123-123-1123123,
+			"status":"yellow",
+			"uuid":"asd1213-123123-123-123-1123123,
+			"status":"red",
+		]
+		
+	]
+
+}
+```
+
 ------------
 #### POST `/teachinginstances/join/`
 - Require both params.
@@ -117,47 +161,5 @@ Error body format:
  "error":"Failed to save your click to database :("
 }
 ```
-------------
-#### GET `/scoreboards/`
-- 111111111111111111111111
 
-Request body format: 
-```json
-{
-	"user_id":3,
-	
-}
-```
-Response body format:
-```json
-{
-    "coursekey": "uusitesti",
-    "courseinfo": "Juuh elikkäs joo...",
-    "coursematerial_name": "MAY2",
-    "coursematerial_version": 1.2,
-    "name": "Kissalan matikka 2019",
-    "startdate": "2019-12-27T22:00:00.000Z",
-    "enddate": "2030-01-29T22:00:00.000Z",
-    "owner_id":3
-	"students":[
-		"firstname:"Kissa",
-		"lastname:"Ankka",
-		"exercises":[
-			"uuid":"123123-123123-123-123-1123123,
-			"status":"red",
-			"uuid":"asd1213-123123-123-123-1123123,
-			"status":"green",
-		],
-		"firstname:"Peter",
-		"lastname:"Pan",
-		"exercises":[
-			"uuid":"123123-123123-123-123-1123123,
-			"status":"yellow",
-			"uuid":"asd1213-123123-123-123-1123123,
-			"status":"red",
-		]
-		
-	]
 
-}
-```
