@@ -67,7 +67,7 @@ Request body format:
 ```json
 {
 	"user_id":3,
-	"teacher":true/false
+	"teacher":"true/false"
 }
 ```
 Response body format:
@@ -80,22 +80,22 @@ Response body format:
     "name": "Kissalan matikka 2019",
     "startdate": "2019-12-27T22:00:00.000Z",
     "enddate": "2030-01-29T22:00:00.000Z",
-    "owner_id":3
+    "owner_id":3,
 	"students":[
 		"firstname:"Kissa",
 		"lastname:"Ankka",
 		"exercises":[
-			"uuid":"123123-123123-123-123-1123123,
+			"uuid":"123123-123123-123-123-1123123",
 			"status":"red",
-			"uuid":"asd1213-123123-123-123-1123123,
+			"uuid":"asd1213-123123-123-123-1123123",
 			"status":"green",
 		],
 		"firstname:"Peter",
 		"lastname:"Pan",
 		"exercises":[
-			"uuid":"123123-123123-123-123-1123123,
+			"uuid":"123123-123123-123-123-1123123",
 			"status":"yellow",
-			"uuid":"asd1213-123123-123-123-1123123,
+			"uuid":"asd1213-123123-123-123-1123123",
 			"status":"red",
 		]
 		
