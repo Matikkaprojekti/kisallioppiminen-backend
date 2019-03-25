@@ -8,7 +8,7 @@ const router: Router = Router()
 
 // Create a teachinginstance
 router.post('/', (req: Request, res: Response) => {
-  const { coursekey, courseinfo, name, startdate, enddate, coursematerial_name, coursematerial_version } = req.body
+  const { coursekey, name, startdate, enddate, coursematerial_name, coursematerial_version } = req.body
 
   // Check that required params are present
   if (coursekey && coursematerial_name && coursematerial_version && name && startdate && enddate) {
