@@ -28,17 +28,20 @@
 
 #### POST `/teachinginstances`
 - courseinfo is not required
+- Coursekey ei ole case-sensitive. Jos post pyynössä on isoja kirjaimia ne muutetaan backendissä pieniksi.
 
 Request body format: 
 ```json
 {
+	
 	"coursekey":"uusitesti",
 	"courseinfo":"Juuh elikkäs joo...",
 	"name":"Kissalan matikka 2019",
 	"startdate":"28.12.2019",
 	"enddate":"30.1.2030",
 	"coursematerial_name":"MAY2",
-	"coursematerial_version":1.2
+	"coursematerial_version":1.2,
+	"user_id":3
 	
 }
 ```
@@ -51,20 +54,23 @@ Response body format:
     "coursematerial_version": 1.2,
     "name": "Kissalan matikka 2019",
     "startdate": "2019-12-27T22:00:00.000Z",
-    "enddate": "2030-01-29T22:00:00.000Z"
+    "enddate": "2030-01-29T22:00:00.000Z",
+    "owner_id":3
+    
 }
 ```
 
 ------------
-#### POST `/teachinginstances/join/:coursekey`
+#### POST `/teachinginstances/join/`
 - Require both params.
 - coursekey and user_id must be exist in database.
+- Coursekey ei ole case-sensitive. Jos post pyynössä on isoja kirjaimia ne muutetaan backendissä pieniksi.
 
 Request body format: 
 ```json
 {
 	"user_id": 1,
-	"teacher":false
+	"coursekey":"kissalan lukio"
 }
 ```
 Response body format:
@@ -84,4 +90,74 @@ Response body format:
     ]
 }
 ```
+------------
+#### POST `/trafficlights/`
+- Coursekey ei ole case-sensitive. Jos post pyynnössä on isoja kirjaimia ne muutetaan backendissä pieniksi.
 
+Request body format: 
+```json
+{
+	"user_id": 1,
+	"status": [green,yellow,red],
+	"coursekey":"kissalan lukio", 
+	"exercise_uuid":"asdaasd-asd11sdasd-asdeasd-asdadwasda-asdasdwasd"
+	
+}
+```
+Response body format:
+```json
+{
+ "status": [green, yellow, red]
+}
+```
+Error body format:
+- Statuscode 400
+```json
+{
+ "error":"Failed to save your click to database :("
+}
+```
+------------
+#### GET `/scoreboards/`
+- 111111111111111111111111
+
+Request body format: 
+```json
+{
+	"user_id":3,
+	
+}
+```
+Response body format:
+```json
+{
+    "coursekey": "uusitesti",
+    "courseinfo": "Juuh elikkäs joo...",
+    "coursematerial_name": "MAY2",
+    "coursematerial_version": 1.2,
+    "name": "Kissalan matikka 2019",
+    "startdate": "2019-12-27T22:00:00.000Z",
+    "enddate": "2030-01-29T22:00:00.000Z",
+    "owner_id":3
+	"students":[
+		"firstname:"Kissa",
+		"lastname:"Ankka",
+		"exercises":[
+			"uuid":"123123-123123-123-123-1123123,
+			"status":"red",
+			"uuid":"asd1213-123123-123-123-1123123,
+			"status":"green",
+		],
+		"firstname:"Peter",
+		"lastname:"Pan",
+		"exercises":[
+			"uuid":"123123-123123-123-123-1123123,
+			"status":"yellow",
+			"uuid":"asd1213-123123-123-123-1123123,
+			"status":"red",
+		]
+		
+	]
+
+}
+```
