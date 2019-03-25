@@ -82,16 +82,16 @@ Response body format:
     "enddate": "2030-01-29T22:00:00.000Z",
     "owner_id":3,
 	"students":[
-		"firstname:"Kissa",
-		"lastname:"Ankka",
+		"firstname":"Kissa",
+		"lastname":"Ankka",
 		"exercises":[
 			"uuid":"123123-123123-123-123-1123123",
 			"status":"red",
 			"uuid":"asd1213-123123-123-123-1123123",
 			"status":"green",
 		],
-		"firstname:"Peter",
-		"lastname:"Pan",
+		"firstname":"Peter",
+		"lastname":"Pan",
 		"exercises":[
 			"uuid":"123123-123123-123-123-1123123",
 			"status":"yellow",
@@ -142,7 +142,7 @@ Request body format:
 ```json
 {
 	"user_id": 1,
-	"status": [green,yellow,red],
+	"status": ["green", "yellow", "red"],
 	"coursekey":"kissalan lukio", 
 	"exercise_uuid":"asdaasd-asd11sdasd-asdeasd-asdadwasda-asdasdwasd"
 	
@@ -151,7 +151,7 @@ Request body format:
 Response body format:
 ```json
 {
- "status": [green, yellow, red]
+ "status": ["green", "yellow", "red"]
 }
 ```
 Error body format:
