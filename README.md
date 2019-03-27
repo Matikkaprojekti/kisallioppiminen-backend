@@ -18,12 +18,13 @@
 ### Tarjolla olevat urlit:
 
 | Metodi(t) | URL                  | Kuvaus                              |
-| --------- | -------------------- | ----------------------------------- |
-| GET       | `/users/auth`        | Authentikoi käyttäjän               |
-| GET       | `/users/me`          | Hakee kirjautuneen käyttäjän tiedot |
-| POST      | `/teachinginstances` | Luo uuden opetusinstanssin          |
-| GET       | `/teachinginstances` | Hakee opetusinstanssit joihin opiskelija on liittynyt |
-| PATCH     | `/teachinginstances` | Liittää käyttäjän opetusinstanssiin |
+| --------- | ----------------------------------- | --------------------------------------------------------------- |
+| GET       | `/users/auth`                       | Authentikoi käyttäjän              				    |
+| GET       | `/users/me`                         | Hakee kirjautuneen käyttäjän tiedot				    |
+| POST      | `/teachinginstances`		  | Luo uuden opetusinstanssin          			    |
+| GET       | `/teachinginstances` 		  | Hakee opetusinstanssit joihin opiskelija on liittynyt           |
+| PATCH     | `/teachinginstances` 		  | Liittää käyttäjän opetusinstanssiin 			    |
+| PUT       | `/trafficlighs/:exercise_uuid`	  | Opiskelija klikkaa liikennevaloa...  			    |
 
 -------------
 
