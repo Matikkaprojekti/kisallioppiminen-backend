@@ -1,12 +1,21 @@
 import { Router, Request, Response } from 'express'
 import Exercise from '../models/Exercise'
+import passport from 'passport'
 
 const router: Router = Router()
 
 // React to trafficlight click
-router.post('/click/:exercise_uuid', async (req: Request, res: Response) => {
+router.put('/:exercise_uuid', passport.authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
   const exercise_uuid = req.params.exercise_uuid // = tehtävän yksilövä UUID
-  const { status, user_id, coursekey } = req.body
+  const { status, coursekey } = req.body
+  const { user } = req
+
+  if (!user) {
+    return res.status(401).json({ error: 'Unauthorized' })
+  }
+
+  // tslint:disable-next-line
+  const user_id = user.id
 
   console.log(exercise_uuid, status, user_id, coursekey)
 
