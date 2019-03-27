@@ -105,7 +105,7 @@ Response body format:
 ```
 
 ------------
-#### POST `/teachinginstances/join/`
+#### PATCH `/teachinginstances/`
 - Require both params.
 - coursekey and user_id must be exist in database.
 - Coursekey ei ole case-sensitive. Jos post pyynössä on isoja kirjaimia ne muutetaan backendissä pieniksi.
@@ -113,7 +113,6 @@ Response body format:
 Request body format: 
 ```json
 {
-	"user_id": 1,
 	"coursekey":"kissalan lukio"
 }
 ```

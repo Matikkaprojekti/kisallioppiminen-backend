@@ -1,5 +1,7 @@
 export default interface User {
   id: number,
   name: string,
-  googleid: number
+  googleid: number,
+  firstname: string,
+  lastname: string
 }
