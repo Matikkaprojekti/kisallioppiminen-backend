@@ -32,3 +32,13 @@ export interface Course {
   startdate: Date,
   enddate: Date
 }
+
+export interface ApiCourseInstanceObject {
+  coursekey: string
+  coursematerial_name: string,
+  version: string,
+  name: string,
+  startdate: Date,
+  enddate: Date,
+  students: any[]
+}

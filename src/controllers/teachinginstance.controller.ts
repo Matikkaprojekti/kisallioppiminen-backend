@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express'
 import passport from 'passport'
 import { findOrCreateTeachinginstance, findTeachinginstanceByCoursekey } from '../services/teachingInstanceService'
 import { findUserById } from '../services/userService'
-import { findOrCreateUsersTeachinginstance } from '../services/usersTeachingInstancesService'
+import { findOrCreateUsersTeachinginstance, findTeachingInstancesWithUserId } from '../services/usersTeachingInstancesService'
 
 const router: Router = Router()
 
@@ -36,8 +36,7 @@ router.patch('/', passport.authenticate('jwt', {session: false}), async (req: Re
     console.log('teachinginstance', teachinginstance)
     if (user && teachinginstance) {
       console.log('Lisätään käyttäjä opetusinstanssiin...')
-      const newInstances = { user_id: user.id, course_coursekey: coursekey, teacher: false }
-
+      const newInstances = { user_id: user.id, course_coursekey: coursekey }
       const result = await findOrCreateUsersTeachinginstance(newInstances)
 
       res.json(result)
@@ -49,6 +48,18 @@ router.patch('/', passport.authenticate('jwt', {session: false}), async (req: Re
     res.status(400)
     res.send('Very BAD request.')
   }
+})
+
+router.get('/', passport.authenticate('jwt', {session: false}), async (req, res) => {
+  const { user } = req
+
+  if (!user) {
+    return res
+      .status(401)
+      .json({error: 'unauthorized'})
+  }
+
+  res.json(await findTeachingInstancesWithUserId(user.id))
 })
 
 export const TeachingInstanceController: Router = router
