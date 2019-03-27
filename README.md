@@ -22,12 +22,13 @@
 | GET       | `/users/auth`        | Authentikoi käyttäjän               |
 | GET       | `/users/me`          | Hakee kirjautuneen käyttäjän tiedot |
 | POST      | `/teachinginstances` | Luo uuden opetusinstanssin          |
-| POST      | `/teachinginstances/join` | Liittää käyttäjän opetusinstanssiin |
+| GET       | `/teachinginstances` | Hakee opetusinstanssit joihin opiskelija on liittynyt |
+| PATCH     | `/teachinginstances` | Liittää käyttäjän opetusinstanssiin |
 
 -------------
 
 #### POST `/teachinginstances`
-- coursekey ei ole case-sensitive. Jos post pyynössä on isoja kirjaimia ne muutetaan backendissä pieniksi.
+- coursekey ei ole case-sensitive. Jos post pyynnössä on isoja kirjaimia ne muutetaan backendissä pieniksi.
 
 Request body format: 
 ```json
@@ -57,7 +58,8 @@ Response body format:
 
 ----------
 #### GET `/teachinginstances/`
-teacher(false) = palautetaan opiskelijan omat kurssit. teacher(true) = palautetaan scoreboard.
+- Request-body on tyhjä, koska käyttäjätiedot saadaan authista.
+
 Request body format: 
 ```json
 {
@@ -70,7 +72,6 @@ Response body format:
     "teachinginstances": [
         {
             "coursekey": "uusitesti",
-            "courseinfo": "Juuh elikkäs joo...",
             "coursematerial_name": "MAY2",
             "version": "Kissalan lukio",
             "name": "Kissalan matikka 2019",
@@ -84,11 +85,11 @@ Response body format:
                     "exercises":[
                         {
                             "uuid":"123123-123123-123-123-1123123",
-                            "status":"red",
+                            "status":"red"
                         },
                         {
                             "uuid":"asd1213-123123-123-123-1123123",
-                            "status":"green",
+                            "status":"green"
                         }
                     ]
                 },
@@ -98,11 +99,11 @@ Response body format:
                     "exercises":[
                         {
                             "uuid":"123123-123123-123-123-1123123",
-                            "status":"yellow",
+                            "status":"yellow"
                         },
                         {
                             "uuid":"asd1213-123123-123-123-1123123",
-                            "status":"red",
+                            "status":"red"
                         }
                     ]
                  }
@@ -115,9 +116,7 @@ Response body format:
 
 ------------
 #### PATCH `/teachinginstances/` (Kurssi-instanssiin liittyminen)
-- Require both params.
-- coursekey and user_id must be exist in database.
-- Coursekey ei ole case-sensitive. Jos post pyynössä on isoja kirjaimia ne muutetaan backendissä pieniksi.
+- coursekey ei ole case-sensitive. Jos post pyynnössä on isoja kirjaimia ne muutetaan backendissä pieniksi.
 
 Request body format: 
 ```json
