@@ -67,7 +67,7 @@ Request body format:
 Response body format:
 ```json
 {
-    teachinginstances: [
+    "teachinginstances": [
         {
             "coursekey": "uusitesti",
             "courseinfo": "Juuh elikkäs joo...",
