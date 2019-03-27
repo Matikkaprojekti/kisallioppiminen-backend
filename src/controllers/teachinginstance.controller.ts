@@ -7,12 +7,22 @@ import { findOrCreateUsersTeachinginstance, findTeachingInstancesWithUserId } fr
 const router: Router = Router()
 
 // Create a teachinginstance
-router.post('/', (req: Request, res: Response) => {
-  const { coursekey, courseinfo, name, startdate, enddate, coursematerial_name, coursematerial_version } = req.body
+router.post('/', passport.authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
+  const { user } = req
+  const { coursekey, name, startdate, enddate, coursematerial_name, version } = req.body
+
+  if (!user) {
+    return res.status(401).json({ error: 'unauthorized' })
+  }
+
+  // tslint:disable-next-line
+  const owner_id = user.id
+
+  console.log('owner_id', owner_id)
 
   // Check that required params are present
-  if (coursekey && coursematerial_name && coursematerial_version && name && startdate && enddate) {
-    const result = findOrCreateTeachinginstance(req.body).then(r => res.json(r))
+  if (coursekey && coursematerial_name && version && name && startdate && enddate && owner_id) {
+    const result = findOrCreateTeachinginstance({ ...req.body, owner_id }).then(r => res.json(r))
   } else {
     res.status(400)
     res.json({ error: 'Bad request' })
@@ -20,11 +30,11 @@ router.post('/', (req: Request, res: Response) => {
 })
 
 // Student join a teachinginstance with the key of the instance.
-router.patch('/', passport.authenticate('jwt', {session: false}), async (req: Request, res: Response) => {
+router.patch('/', passport.authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
   const { user } = req
-  const { coursekey } = req.body
+  const coursekey = req.body.coursekey.toLowerCase()
 
-  console.log(coursekey)
+  console.log('Trimmed coursekey', coursekey)
 
   if (coursekey !== undefined) {
     console.log('Required params are present.')

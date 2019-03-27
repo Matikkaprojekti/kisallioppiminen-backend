@@ -2,7 +2,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 import express from 'express'
 import bodyParser from 'body-parser'
-import { UserController, TeachingInstanceController } from './controllers'
+import { UserController, TeachingInstanceController, TrafficlightController } from './controllers'
 import cp from 'cookie-parser'
 import expressSession from 'express-session'
 import { passportInitializer } from './passport'
@@ -24,6 +24,7 @@ app.use(
 passportInitializer(app)
 app.use('/users', UserController)
 app.use('/teachinginstances', TeachingInstanceController)
+app.use('/trafficlights', TrafficlightController)
 
 app.get('/', (req, res) => {
   console.log(req)
