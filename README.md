@@ -22,7 +22,7 @@
 | GET       | `/users/auth`        | Authentikoi käyttäjän               |
 | GET       | `/users/me`          | Hakee kirjautuneen käyttäjän tiedot |
 | POST      | `/teachinginstances` | Luo uuden opetusinstanssin          |
-| POST      | `/teachinginstances/join/:coursekey` | Liittää käyttäjän opetusinstanssiin |
+| POST      | `/teachinginstances/join` | Liittää käyttäjän opetusinstanssiin |
 
 -------------
 
