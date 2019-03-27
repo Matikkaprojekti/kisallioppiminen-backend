@@ -24,7 +24,7 @@
 | POST      | `/teachinginstances`		  | Luo uuden opetusinstanssin          			    |
 | GET       | `/teachinginstances` 		  | Hakee opetusinstanssit joihin opiskelija on liittynyt           |
 | PATCH     | `/teachinginstances` 		  | Liittää käyttäjän opetusinstanssiin 			    |
-| PUT       | `/trafficlighs/:exercise_uuid`	  | Opiskelija klikkaa liikennevaloa...  			    |
+| PUT       | `/trafficlights/:exercise_uuid`	  | Opiskelija klikkaa liikennevaloa...  			    |
 
 -------------
 
@@ -173,5 +173,23 @@ Error body format:
  "error":"Failed to save your click to database :("
 }
 ```
+------------
+#### PUT `/trafficlights/:exercise_uuid` (Liikennevalon klikkaaminen)
+- Luo uuden exercisen jos sellaista ei ole.
+- Jos sama käyttäjä on klikkaa uudelleen aikaisemmin klikkaamaansa liikennevaloa, päivitetään sen väriä.
 
+Request body format: 
+```json
+{
+	"status":"red",
+	"coursekey":"Mäkelänrinteen lukio 9A"
+}
+```
+Response body format:
+```json
+{
+	"message":"Update finished."
+}
+```
+------------
 
