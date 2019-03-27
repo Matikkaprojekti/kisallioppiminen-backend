@@ -145,10 +145,7 @@ Response body format:
             "firstname":"Kissa",
             "lastname":"Ankka",
             "exercises":[
-                {
-                    "uuid":"123123-123123-123-123-1123123",
-                    "status":"red",
-                }
+	    
             ]
         }
     ]
