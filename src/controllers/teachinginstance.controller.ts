@@ -7,13 +7,22 @@ import { findOrCreateUsersTeachinginstance } from '../services/usersTeachingInst
 const router: Router = Router()
 
 // Create a teachinginstance
-router.post('/', (req: Request, res: Response) => {
-  // user_id saadaan varmaan oikeasti tokenista partettua tms. eikä req.parametrina?
-  const { coursekey, name, startdate, enddate, coursematerial_name, coursematerial_version, user_id } = req.body
+router.post('/', passport.authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
+  const { user } = req
+  const { coursekey, name, startdate, enddate, coursematerial_name, version } = req.body
+
+  if (!user) {
+    return res.status(401).json({ error: 'unauthorized' })
+  }
+
+  // tslint:disable-next-line
+  const owner_id = user.id
+
+  console.log('owner_id', owner_id)
 
   // Check that required params are present
-  if (coursekey && coursematerial_name && coursematerial_version && name && startdate && enddate) {
-    const result = findOrCreateTeachinginstance(req.body).then(r => res.json(r))
+  if (coursekey && coursematerial_name && version && name && startdate && enddate && owner_id) {
+    const result = findOrCreateTeachinginstance({ ...req.body, owner_id }).then(r => res.json(r))
   } else {
     res.status(400)
     res.json({ error: 'Bad request' })
