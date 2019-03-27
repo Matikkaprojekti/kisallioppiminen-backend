@@ -27,29 +27,24 @@
 -------------
 
 #### POST `/teachinginstances`
-- courseinfo is not required
-- Coursekey ei ole case-sensitive. Jos post pyynössä on isoja kirjaimia ne muutetaan backendissä pieniksi.
+- coursekey ei ole case-sensitive. Jos post pyynössä on isoja kirjaimia ne muutetaan backendissä pieniksi.
 
 Request body format: 
 ```json
 {
-	
 	"coursekey":"uusitesti",
-	"courseinfo":"Juuh elikkäs joo...",
 	"name":"Kissalan matikka 2019",
 	"startdate":"28.12.2019",
 	"enddate":"30.1.2030",
 	"coursematerial_name":"MAY2",
 	"coursematerial_version":1.2,
 	"user_id":3
-	
 }
 ```
 Response body format:
 ```json
 {
     "coursekey": "uusitesti",
-    "courseinfo": "Juuh elikkäs joo...",
     "coursematerial_name": "MAY2",
     "coursematerial_version": 1.2,
     "name": "Kissalan matikka 2019",
@@ -66,28 +61,24 @@ teacher(false) = palautetaan opiskelijan omat kurssit. teacher(true) = palauteta
 Request body format: 
 ```json
 {
-	"user_id":3,
-	"teacher":"true/false"
+
 }
 ```
 Response body format:
 ```json
 {
-    teachinginstances: [
+    "coursekey": "uusitesti",
+    "coursematerial_name": "MAY2",
+    "version": "Kissalan lukio",
+    "name": "Kissalan matikka 2019",
+    "startdate": "2019-12-27T22:00:00.000Z",
+    "enddate": "2030-01-29T22:00:00.000Z",
+    "owner_id":3,
+    "students":[
         {
-            "coursekey": "uusitesti",
-            "courseinfo": "Juuh elikkäs joo...",
-            "coursematerial_name": "MAY2",
-            "version": "Kissalan lukio",
-            "name": "Kissalan matikka 2019",
-            "startdate": "2019-12-27T22:00:00.000Z",
-            "enddate": "2030-01-29T22:00:00.000Z",
-            "owner_id":3,
-            "students":[
-            {
-                "firstname":"Kissa",
-                "lastname":"Ankka",
-                "exercises":[
+            "firstname":"Kissa",
+            "lastname":"Ankka",
+            "exercises":[
                 {
                     "uuid":"123123-123123-123-123-1123123",
                     "status":"red",
@@ -96,12 +87,12 @@ Response body format:
                     "uuid":"asd1213-123123-123-123-1123123",
                     "status":"green",
                 }
-                ]
-            },
-            {
-                "firstname":"Peter",
-                "lastname":"Pan",
-                "exercises":[
+            ]
+        },
+        {
+            "firstname":"Peter",
+            "lastname":"Pan",
+            "exercises":[
                 {
                     "uuid":"123123-123123-123-123-1123123",
                     "status":"yellow",
@@ -110,18 +101,16 @@ Response body format:
                     "uuid":"asd1213-123123-123-123-1123123",
                     "status":"red",
                 }
-                ]
-             }
-
             ]
+         }
 
-        },
     ]
+
 }
 ```
 
 ------------
-#### PATCH `/teachinginstances/`
+#### PATCH `/teachinginstances/` (Kurssi-instanssiin liittyminen)
 - Require both params.
 - coursekey and user_id must be exist in database.
 - Coursekey ei ole case-sensitive. Jos post pyynössä on isoja kirjaimia ne muutetaan backendissä pieniksi.
@@ -136,7 +125,6 @@ Response body format:
 ```json
 {
     "coursekey": "kissalan lukio",
-    "courseinfo": "Juuh elikkäs joo...",
     "coursematerial_name": "MAY2",
     "version": "Kissalan lukio",
     "name": "Kissalan matikka 2019",
