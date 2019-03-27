@@ -132,16 +132,24 @@ Request body format:
 Response body format:
 ```json
 {
-    "teachinginstance": [
+    "coursekey": "kissalan lukio",
+    "courseinfo": "Juuh elikkäs joo...",
+    "coursematerial_name": "MAY2",
+    "version": "Kissalan lukio",
+    "name": "Kissalan matikka 2019",
+    "startdate": "2019-12-27T22:00:00.000Z",
+    "enddate": "2030-01-29T22:00:00.000Z",
+    "owner_id":3,
+    "students":[
         {
-            "user_id": 1,
-            "course_coursekey": "kissalankurssiavain2019",
-            "teacher": false
-        },
-        {
-            "user_id": 1,
-            "course_coursekey": "kissalankurssiavain2019",
-            "teacher": true
+            "firstname":"Kissa",
+            "lastname":"Ankka",
+            "exercises":[
+                {
+                    "uuid":"123123-123123-123-123-1123123",
+                    "status":"red",
+                }
+            ]
         }
     ]
 }
