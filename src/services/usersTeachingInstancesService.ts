@@ -5,15 +5,16 @@ export async function findOrCreateUsersTeachinginstance(newUsersTeachinginstance
   const instance = await database('usersteachinginstances')
     .select()
     .where({ user_id: newUsersTeachinginstance.user_id, course_coursekey: newUsersTeachinginstance.course_coursekey })
+    .first()
 
-  console.log(instance)
+  const { user_id, course_coursekey } = newUsersTeachinginstance
 
   if (!instance) {
     const temp = await database('usersteachinginstances').insert(newUsersTeachinginstance)
 
     const newlyCreatedinstance = await database('usersteachinginstances')
       .select()
-      .where({ user_id: newUsersTeachinginstance.user_id, course_coursekey: newUsersTeachinginstance.course_coursekey })
+      .where({ user_id, course_coursekey })
 
     return newlyCreatedinstance
   }
