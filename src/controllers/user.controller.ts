@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express'
 import passport from 'passport'
+import jwt from 'jsonwebtoken'
 
 const router: Router = Router()
 
@@ -11,10 +12,12 @@ router.get('/auth', passport.authenticate('google', { scope: ['profile'] }), (re
 })
 
 router.get('/auth/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
-  res.cookie('connect.sid', req.cookies['connect.sid'], {
-    domain: process.env.COOKIE_DOMAIN
-  })
-  res.redirect(process.env.NODE_ENV === 'dev' ? 'http://localhost:3000' : process.env.FRONTEND_URL)
+  const { user } = req
+  if (!user) {
+    return res.redirect(process.env.NODE_ENV === 'dev' ? 'http://localhost:3000' : process.env.FRONTEND_URL)
+  }
+  const token = jwt.sign({userId: user.id}, process.env.JWT_SECRET)
+  res.redirect(process.env.NODE_ENV === 'dev' ? 'http://localhost:3000?token=' + token : process.env.FRONTEND_URL + '?token=' + token)
 })
 
 // Get all users
@@ -28,7 +31,7 @@ router.get('/:id(\\d)', (req: Request, res: Response) => {
 })
 
 // Get authorized user
-router.get('/me', (req, res) => {
+router.get('/me', passport.authenticate('jwt', {session: false}), (req, res) => {
   const { user } = req
   if (user) {
     const { name, id } = user
