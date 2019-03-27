@@ -21,11 +21,12 @@ router.post('/', (req: Request, res: Response) => {
 })
 
 // Student join a teachinginstance with the key of the instance.
-router.patch('/', passport.authenticate('jwt', {session: false}), async (req: Request, res: Response) => {
+router.patch('/', passport.authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
   const { user } = req
-  const { coursekey } = req.body
+  let { coursekey } = req.body
 
-  console.log(coursekey)
+  coursekey = coursekey.toLowerCase()
+  console.log('Trimmed coursekey', coursekey)
 
   if (coursekey !== undefined) {
     console.log('Required params are present.')
