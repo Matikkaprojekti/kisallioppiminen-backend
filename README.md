@@ -81,25 +81,37 @@ Response body format:
     "startdate": "2019-12-27T22:00:00.000Z",
     "enddate": "2030-01-29T22:00:00.000Z",
     "owner_id":3,
-	"students":[
-		"firstname":"Kissa",
-		"lastname":"Ankka",
-		"exercises":[
-			"uuid":"123123-123123-123-123-1123123",
-			"status":"red",
-			"uuid":"asd1213-123123-123-123-1123123",
-			"status":"green",
-		],
-		"firstname":"Peter",
-		"lastname":"Pan",
-		"exercises":[
-			"uuid":"123123-123123-123-123-1123123",
-			"status":"yellow",
-			"uuid":"asd1213-123123-123-123-1123123",
-			"status":"red",
-		]
-		
-	]
+    "students":[
+        {
+            "firstname":"Kissa",
+            "lastname":"Ankka",
+            "exercises":[
+                {
+                    "uuid":"123123-123123-123-123-1123123",
+                    "status":"red",
+                },
+                {
+                    "uuid":"asd1213-123123-123-123-1123123",
+                    "status":"green",
+                }
+            ]
+        },
+        {
+            "firstname":"Peter",
+            "lastname":"Pan",
+            "exercises":[
+                {
+                    "uuid":"123123-123123-123-123-1123123",
+                    "status":"yellow",
+                },
+                {
+                    "uuid":"asd1213-123123-123-123-1123123",
+                    "status":"red",
+                }
+            ]
+         }
+
+    ]
 
 }
 ```
