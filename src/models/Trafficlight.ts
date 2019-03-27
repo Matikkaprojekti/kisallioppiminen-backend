@@ -1,4 +1,4 @@
-enum statusOptions {
+enum StatusOptions {
   green,
   yellow,
   red
@@ -7,6 +7,6 @@ enum statusOptions {
 export default interface Trafficlight {
   exercise_uuid: string
   coursekey: string
-  status: statusOptions
+  status: StatusOptions
   user_id: string
 }
