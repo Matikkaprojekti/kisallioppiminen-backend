@@ -32,9 +32,8 @@ router.post('/', passport.authenticate('jwt', { session: false }), async (req: R
 // Student join a teachinginstance with the key of the instance.
 router.patch('/', passport.authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
   const { user } = req
-  let { coursekey } = req.body
+  const coursekey = req.body.coursekey.toLowerCase()
 
-  coursekey = coursekey.toLowerCase()
   console.log('Trimmed coursekey', coursekey)
 
   if (coursekey !== undefined) {
