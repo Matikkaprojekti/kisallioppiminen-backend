@@ -28,6 +28,7 @@ export async function findOrCreateUsersTeachinginstance(newUsersTeachinginstance
 export async function findTeachingInstancesWithUserId(userId: number): Promise<ApiCourseInstanceObject[]> {
   return database('usersteachinginstances')
     .select()
+    .where({user_id: userId})
     .innerJoin('teachinginstances', 'usersteachinginstances.course_coursekey', '=', 'teachinginstances.coursekey')
     .then(formatUserTeachingInstanceData)
 
