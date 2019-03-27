@@ -39,7 +39,7 @@ Request body format:
 	"startdate":"28.12.2019",
 	"enddate":"30.1.2030",
 	"coursematerial_name":"MAY2",
-	"coursematerial_version":1.2,
+	"version":"1.2",
 	"user_id":3
 }
 ```
@@ -48,7 +48,7 @@ Response body format:
 {
     "coursekey": "uusitesti",
     "coursematerial_name": "MAY2",
-    "coursematerial_version": 1.2,
+    "version": "1.2",
     "name": "Kissalan matikka 2019",
     "startdate": "2019-12-27T22:00:00.000Z",
     "enddate": "2030-01-29T22:00:00.000Z",
