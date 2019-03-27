@@ -20,29 +20,27 @@ router.post('/', (req: Request, res: Response) => {
 })
 
 // Student join a teachinginstance with the key of the instance.
-router.post('/join/:coursekey', async (req: Request, res: Response) => {
-  const coursekey = req.params.coursekey
-  const { user_id, teacher } = req.body
+router.patch('/', passport.authenticate('jwt', {session: false}), async (req: Request, res: Response) => {
+  const { user } = req
+  const { coursekey } = req.body
 
-  console.log(coursekey, user_id, teacher)
+  console.log(coursekey)
 
-  if (coursekey && user_id && teacher !== undefined) {
+  if (coursekey !== undefined) {
     console.log('Required params are present.')
     console.log('Checking if coursekey and user_id exists...')
 
-    const user = await findUserById(user_id)
     const teachinginstance = await findTeachinginstanceByCoursekey(coursekey)
 
     console.log('user ', user)
     console.log('teachinginstance', teachinginstance)
     if (user && teachinginstance) {
       console.log('Lisätään käyttäjä opetusinstanssiin...')
-
-      const newInstances = { user_id, course_coursekey: coursekey, teacher }
+      const newInstances = { user_id: user.id, course_coursekey: coursekey, teacher: false }
 
       const result = await findOrCreateUsersTeachinginstance(newInstances)
 
-      res.json({ teachinginstance: result })
+      res.json(result)
     } else {
       res.status(400)
       res.send('User or Teachinginstance not found!')

@@ -2,9 +2,10 @@ import database from '../database'
 import Teachinginstance from '../models/TeachingInstance'
 
 export async function findOrCreateTeachinginstance(newTeachingInstance: Teachinginstance): Promise<Teachinginstance> {
+  const { coursekey } = newTeachingInstance
   const instance = await database('teachinginstances')
     .select()
-    .where({ coursekey: newTeachingInstance.coursekey })
+    .where({ coursekey })
     .first()
 
   if (!instance) {
@@ -12,7 +13,7 @@ export async function findOrCreateTeachinginstance(newTeachingInstance: Teaching
 
     const newlyCreatedinstance = await database('teachinginstances')
       .select()
-      .where({ coursekey: newTeachingInstance.coursekey })
+      .where({ coursekey })
       .first()
 
     return newlyCreatedinstance
