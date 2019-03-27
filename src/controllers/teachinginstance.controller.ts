@@ -8,7 +8,8 @@ const router: Router = Router()
 
 // Create a teachinginstance
 router.post('/', (req: Request, res: Response) => {
-  const { coursekey, name, startdate, enddate, coursematerial_name, coursematerial_version } = req.body
+  // user_id saadaan varmaan oikeasti tokenista partettua tms. eikä req.parametrina?
+  const { coursekey, name, startdate, enddate, coursematerial_name, coursematerial_version, user_id } = req.body
 
   // Check that required params are present
   if (coursekey && coursematerial_name && coursematerial_version && name && startdate && enddate) {
