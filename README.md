@@ -40,7 +40,6 @@ Request body format:
 	"enddate":"30.1.2030",
 	"coursematerial_name":"MAY2",
 	"version":"1.2",
-	"user_id":3
 }
 ```
 Response body format:
