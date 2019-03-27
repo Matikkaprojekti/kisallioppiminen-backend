@@ -22,34 +22,30 @@
 | GET       | `/users/auth`        | Authentikoi käyttäjän               |
 | GET       | `/users/me`          | Hakee kirjautuneen käyttäjän tiedot |
 | POST      | `/teachinginstances` | Luo uuden opetusinstanssin          |
-| POST      | `/teachinginstances/join/:coursekey` | Liittää käyttäjän opetusinstanssiin |
+| GET       | `/teachinginstances` | Hakee opetusinstanssit joihin opiskelija on liittynyt |
+| PATCH     | `/teachinginstances` | Liittää käyttäjän opetusinstanssiin |
 
 -------------
 
 #### POST `/teachinginstances`
-- courseinfo is not required
-- Coursekey ei ole case-sensitive. Jos post pyynössä on isoja kirjaimia ne muutetaan backendissä pieniksi.
+- coursekey ei ole case-sensitive. Jos post pyynnössä on isoja kirjaimia ne muutetaan backendissä pieniksi.
 
 Request body format: 
 ```json
 {
-	
 	"coursekey":"uusitesti",
-	"courseinfo":"Juuh elikkäs joo...",
 	"name":"Kissalan matikka 2019",
 	"startdate":"28.12.2019",
 	"enddate":"30.1.2030",
 	"coursematerial_name":"MAY2",
 	"coursematerial_version":1.2,
 	"user_id":3
-	
 }
 ```
 Response body format:
 ```json
 {
     "coursekey": "uusitesti",
-    "courseinfo": "Juuh elikkäs joo...",
     "coursematerial_name": "MAY2",
     "coursematerial_version": 1.2,
     "name": "Kissalan matikka 2019",
@@ -62,53 +58,65 @@ Response body format:
 
 ----------
 #### GET `/teachinginstances/`
-teacher(false) = palautetaan opiskelijan omat kurssit. teacher(true) = palautetaan scoreboard.
+- Request-body on tyhjä, koska käyttäjätiedot saadaan authista.
+
 Request body format: 
 ```json
 {
-	"user_id":3,
-	"teacher":"true/false"
+
 }
 ```
 Response body format:
 ```json
 {
-    "coursekey": "uusitesti",
-    "courseinfo": "Juuh elikkäs joo...",
-    "coursematerial_name": "MAY2",
-    "version": "Kissalan lukio",
-    "name": "Kissalan matikka 2019",
-    "startdate": "2019-12-27T22:00:00.000Z",
-    "enddate": "2030-01-29T22:00:00.000Z",
-    "owner_id":3,
-	"students":[
-		"firstname":"Kissa",
-		"lastname":"Ankka",
-		"exercises":[
-			"uuid":"123123-123123-123-123-1123123",
-			"status":"red",
-			"uuid":"asd1213-123123-123-123-1123123",
-			"status":"green",
-		],
-		"firstname":"Peter",
-		"lastname":"Pan",
-		"exercises":[
-			"uuid":"123123-123123-123-123-1123123",
-			"status":"yellow",
-			"uuid":"asd1213-123123-123-123-1123123",
-			"status":"red",
-		]
-		
-	]
+    "teachinginstances": [
+        {
+            "coursekey": "uusitesti",
+            "coursematerial_name": "MAY2",
+            "version": "Kissalan lukio",
+            "name": "Kissalan matikka 2019",
+            "startdate": "2019-12-27T22:00:00.000Z",
+            "enddate": "2030-01-29T22:00:00.000Z",
+            "owner_id":3,
+            "students":[
+                {
+                    "firstname":"Kissa",
+                    "lastname":"Ankka",
+                    "exercises":[
+                        {
+                            "uuid":"123123-123123-123-123-1123123",
+                            "status":"red"
+                        },
+                        {
+                            "uuid":"asd1213-123123-123-123-1123123",
+                            "status":"green"
+                        }
+                    ]
+                },
+                {
+                    "firstname":"Peter",
+                    "lastname":"Pan",
+                    "exercises":[
+                        {
+                            "uuid":"123123-123123-123-123-1123123",
+                            "status":"yellow"
+                        },
+                        {
+                            "uuid":"asd1213-123123-123-123-1123123",
+                            "status":"red"
+                        }
+                    ]
+                 }
+            ]
 
+        },
+    ]
 }
 ```
 
 ------------
-#### PATCH `/teachinginstances/`
-- Require both params.
-- coursekey and user_id must be exist in database.
-- Coursekey ei ole case-sensitive. Jos post pyynössä on isoja kirjaimia ne muutetaan backendissä pieniksi.
+#### PATCH `/teachinginstances/` (Kurssi-instanssiin liittyminen)
+- coursekey ei ole case-sensitive. Jos post pyynnössä on isoja kirjaimia ne muutetaan backendissä pieniksi.
 
 Request body format: 
 ```json
@@ -119,16 +127,20 @@ Request body format:
 Response body format:
 ```json
 {
-    "teachinginstance": [
+    "coursekey": "kissalan lukio",
+    "coursematerial_name": "MAY2",
+    "version": "Kissalan lukio",
+    "name": "Kissalan matikka 2019",
+    "startdate": "2019-12-27T22:00:00.000Z",
+    "enddate": "2030-01-29T22:00:00.000Z",
+    "owner_id":3,
+    "students":[
         {
-            "user_id": 1,
-            "course_coursekey": "kissalankurssiavain2019",
-            "teacher": false
-        },
-        {
-            "user_id": 1,
-            "course_coursekey": "kissalankurssiavain2019",
-            "teacher": true
+            "firstname":"Kissa",
+            "lastname":"Ankka",
+            "exercises":[
+	    
+            ]
         }
     ]
 }
