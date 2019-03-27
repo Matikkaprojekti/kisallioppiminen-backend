@@ -34,8 +34,8 @@ router.get('/:id(\\d)', (req: Request, res: Response) => {
 router.get('/me', passport.authenticate('jwt', {session: false}), (req, res) => {
   const { user } = req
   if (user) {
-    const { name, id } = user
-    return res.json({ id, name })
+    const { name, id, lastname } = user
+    return res.json({ id, name, lastname })
   }
   res.status(401).json({ error: 'Unauthorized' })
 })

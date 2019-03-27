@@ -22,11 +22,11 @@ export const passportInitializer = (app: any) => {
         refreshToken: any,
         profile: {
           id: number;
-          name: { familyName: string; givenName: string };
+          name: { familyName: string; givenName: string, lastname: string };
         },
         cb: any
       ) => {
-        findOrCreateUser({ googleId: profile.id, name: profile.name.givenName })
+        findOrCreateUser({ googleId: profile.id, firstname: profile.name.givenName, lastname: profile.name.familyName })
           .then((result: any) => {
             return cb(null, result)
           })

@@ -1,18 +1,20 @@
 import database from '../database'
 import User from '../models/User'
 
-export async function findOrCreateUser({ googleId, name }: { googleId: number; name: string }): Promise<User> {
+export async function findOrCreateUser({ googleId, firstname, lastname }: { googleId: number; firstname: string, lastname: string }): Promise<User> {
   const user = await database('users')
     .select()
     .where({ googleid: googleId })
     .first()
 
   if (!user) {
-    const userId = await database('users').insert({ googleid: googleId, name }, 'id')
+    const userId = await database('users').insert({ googleid: googleId, name: firstname, firstname, lastname }, 'id')
     return {
-      id: userId,
+      id: userId[0],
+      name: firstname,
       googleid: googleId,
-      name
+      firstname,
+      lastname
     }
   }
 
