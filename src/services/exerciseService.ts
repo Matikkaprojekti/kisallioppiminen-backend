@@ -2,21 +2,23 @@ import database from '../database'
 import Exercise from '../models/Exercise'
 
 export async function findOrCreateExercise(newExercise: Exercise): Promise<Exercise> {
-  const { coursekey } = newExercise
+  const { uuid } = newExercise
   const instance = await database('exercises')
     .select()
-    .where({ coursekey })
+    .where({ uuid })
     .first()
 
   if (!instance) {
-    const temp = await database('teachinginstances').insert(newExercise)
+    const temp = await database('exercises').insert(newExercise)
 
-    const newlyCreatedinstance = await database('teachinginstances')
+    const newlyCreatedExercise = await database('exercises')
       .select()
-      .where({ coursekey })
+      .where({ uuid })
       .first()
 
-    return newlyCreatedinstance
+    console.log('New exercise created.')
+
+    return newlyCreatedExercise
   }
 
   return instance
