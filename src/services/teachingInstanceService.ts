@@ -34,3 +34,16 @@ export async function findTeachinginstanceByCoursekey(coursekey: string): Promis
     return undefined
   }
 }
+
+// tslint:disable-next-line
+export async function findTeachingInstancesByOwnerId(owner_id: number): Promise<Teachinginstance | null> {
+  const instances = await database('teachinginstances')
+    .select('*')
+    .where({ owner_id })
+
+  if (instances) {
+    return instances
+  } else {
+    return undefined
+  }
+}
