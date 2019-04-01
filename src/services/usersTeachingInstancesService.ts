@@ -26,20 +26,30 @@ export async function findOrCreateUsersTeachinginstance(newUsersTeachinginstance
 }
 
 export async function findTeachingInstancesWithUserId(userId: number): Promise<ApiCourseInstanceObject[]> {
-  return database('usersteachinginstances')
+  // Get ordered list of users teachigninstances
+  const result = await database('usersteachinginstances')
     .select()
-    .where({user_id: userId})
+    .where({ user_id: userId })
     .innerJoin('teachinginstances', 'usersteachinginstances.course_coursekey', '=', 'teachinginstances.coursekey')
     .then(formatUserTeachingInstanceData)
 
+  // Reverse and return the list
+  return result.reverse()
 }
 
 function formatUserTeachingInstanceData(array: Array<UsersTeachinginstance & Teachinginstance>): ApiCourseInstanceObject[] {
   return array.map(
     R.pipe(
       R.pick(['coursekey', 'coursematerial_name', 'coursematerial_version', 'name', 'startdate', 'enddate']),
-    ({coursekey, coursematerial_name, coursematerial_version, name, startdate, enddate}) =>
-      ({coursekey, coursematerial_name, version: String(coursematerial_version), name, startdate, enddate, students: []})
+      ({ coursekey, coursematerial_name, coursematerial_version, name, startdate, enddate }) => ({
+        coursekey,
+        coursematerial_name,
+        version: String(coursematerial_version),
+        name,
+        startdate,
+        enddate,
+        students: []
+      })
     )
   )
 }
