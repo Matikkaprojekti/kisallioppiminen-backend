@@ -5,7 +5,5 @@ exports.up = function(knex, Promise) {
 }
 
 exports.down = function(knex, Promise) {
-  return knex.schema.table(table => {
-    table.dropColumn('user_idcourse_coursekey')
-  })
+  return knex.raw('alter table usersteachinginstances drop constraint usersteachinginstances_pkey;')
 }
