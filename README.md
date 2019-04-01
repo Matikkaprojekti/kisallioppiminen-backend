@@ -57,8 +57,9 @@ Response body format:
 ```
 
 ----------
-#### GET `/teachinginstances/`
-- Request-body on tyhjä, koska käyttäjätiedot saadaan authista.
+#### GET `/teachinginstances/:teacher`
+- `/teachinginstances/true` palauttaa kurssit, joilla käyttäjä on luonut.
+- `/teachinginstances/false` palauttaa kurssit, joille käyttäjä on liittynyt opiskelijaksi.
 
 Request body format: 
 ```json
