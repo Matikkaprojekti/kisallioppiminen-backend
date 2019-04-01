@@ -22,11 +22,15 @@ export const passportInitializer = (app: any) => {
         refreshToken: any,
         profile: {
           id: number;
-          name: { familyName: string; givenName: string, lastname: string };
+          name: { familyName: string; givenName: string; lastname: string };
         },
         cb: any
       ) => {
-        findOrCreateUser({ googleId: profile.id, firstname: profile.name.givenName, lastname: profile.name.familyName })
+        findOrCreateUser({
+          googleId: profile.id,
+          firstname: profile.name.givenName,
+          lastname: profile.name.familyName
+        })
           .then((result: any) => {
             return cb(null, result)
           })
@@ -43,9 +47,11 @@ export const passportInitializer = (app: any) => {
         secretOrKey: process.env.JWT_SECRET
       },
       ({ userId }, done) => {
+        console.log('userId = ', userId)
         findUserById(userId)
           .then(user => {
             done(null, user)
+            console.log('user = ', user)
           })
           .catch(e => {
             done(e, null)
@@ -55,10 +61,12 @@ export const passportInitializer = (app: any) => {
   )
 
   passport.serializeUser(({ id }: User, done: any) => {
+    console.log('serializee')
     done(null, id)
   })
 
   passport.deserializeUser((id: number, done: any) => {
+    console.log('deserializee')
     findUserById(id).then((user: any) => {
       if (!user) {
         return done(new Error('Unauthorized'), null)
