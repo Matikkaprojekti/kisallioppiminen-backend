@@ -46,7 +46,7 @@ router.patch('/', passport.authenticate('jwt', { session: false }), async (req: 
     console.log('teachinginstance', teachinginstance)
     if (user && teachinginstance) {
       console.log('Lisätään käyttäjä opetusinstanssiin...')
-      const newInstances = { user_id: user.id, course_coursekey: coursekey }
+      const newInstances = { user_id: user.id, course_coursekey: coursekey, teacher: false }
       const result = await findOrCreateUsersTeachinginstance(newInstances)
 
       res.json(result)
@@ -60,13 +60,13 @@ router.patch('/', passport.authenticate('jwt', { session: false }), async (req: 
   }
 })
 
-router.get('/', passport.authenticate('jwt', {session: false}), async (req, res) => {
+router.get('/', passport.authenticate('jwt', { session: false }), async (req, res) => {
   const { user } = req
 
   if (!user) {
     return res
       .status(401)
-      .json({error: 'unauthorized'})
+      .json({ error: 'unauthorized' })
   }
 
   res.json(await findTeachingInstancesWithUserId(user.id))
