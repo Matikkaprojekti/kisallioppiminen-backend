@@ -9,8 +9,11 @@ const router: Router = Router()
 
 // React to trafficlight click
 router.put('/:uuid', passport.authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
+  console.log('eka')
   const uuid = req.params.uuid // = tehtävän yksilövä UUID
   const { status, coursekey } = req.body
+  console.log('status: ', status)
+  console.log('coursekey: ', coursekey)
   const { user } = req
 
   if (!user) {
@@ -19,7 +22,7 @@ router.put('/:uuid', passport.authenticate('jwt', { session: false }), async (re
 
   if (status && coursekey) {
     // tslint:disable-next-line
-    const user_id = user.id
+    const user_id = user.id;
 
     // Luodaan exercise jos sitä ei ole olemassa...
     const newExercise = { uuid, coursekey }
@@ -27,7 +30,7 @@ router.put('/:uuid', passport.authenticate('jwt', { session: false }), async (re
 
     // Päivitetään tai luodaan uusi tietokantamerkintä tälle yksilöidylle nappulalle.
     // tslint:disable-next-line
-    const exercise_uuid = uuid
+    const exercise_uuid = uuid;
     const newTrafficlightEntry = { exercise_uuid, coursekey, status, user_id }
     await updateOrCreateTrafficlight(newTrafficlightEntry)
 
