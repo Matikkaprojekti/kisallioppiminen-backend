@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express'
 import passport from 'passport'
 import { findOrCreateTeachinginstance, findTeachinginstanceByCoursekey, findTeachingInstancesByOwnerId } from '../services/teachingInstanceService'
 import { findUserById } from '../services/userService'
-import { findOrCreateUsersTeachinginstance, findTeachingInstancesWithUserId } from '../services/usersTeachingInstancesService'
+import { findOrCreateUsersTeachinginstance, findTeachingInstancesWithUserId, findTeachingInstanceWithUserIdAndCoursekey } from '../services/usersTeachingInstancesService'
 
 const router: Router = Router()
 
@@ -21,8 +21,12 @@ router.post('/', passport.authenticate('jwt', { session: false }), async (req: R
   console.log('owner_id', owner_id)
 
   // Check that required params are present
+  // asddsa
   if (coursekey && coursematerial_name && version && name && startdate && enddate && owner_id) {
-    const result = findOrCreateTeachinginstance({ ...req.body, owner_id }).then(r => res.json(r))
+    const result = findOrCreateTeachinginstance({
+      ...req.body,
+      owner_id
+    }).then(r => res.json(r))
   } else {
     res.status(400)
     res.json({ error: 'Bad request' })
@@ -30,6 +34,7 @@ router.post('/', passport.authenticate('jwt', { session: false }), async (req: R
 })
 
 // Student join a teachinginstance with the key of the instance.
+// jotain
 router.patch('/', passport.authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
   const { user } = req
   const coursekey = req.body.coursekey.toLowerCase()
@@ -41,18 +46,48 @@ router.patch('/', passport.authenticate('jwt', { session: false }), async (req: 
     console.log('Checking if coursekey and user_id exists...')
 
     const teachinginstance = await findTeachinginstanceByCoursekey(coursekey)
+    await console.log('teachinginstance: ', teachinginstance)
 
     console.log('user ', user)
     console.log('teachinginstance', teachinginstance)
     if (user && teachinginstance) {
       console.log('Lisätään käyttäjä opetusinstanssiin...')
       const newInstances = { user_id: user.id, course_coursekey: coursekey }
-      const result = await findOrCreateUsersTeachinginstance(newInstances)
+      await findOrCreateUsersTeachinginstance(newInstances)
+      const result = await findTeachingInstanceWithUserIdAndCoursekey(user.id, coursekey)
 
-      res.json(result)
-    } else {
+      const result3 = {
+        coursekey: newInstances.course_coursekey,
+        coursematerial_name: result.coursematerial_name,
+        version: result.version,
+        name: result.name,
+        startdate: result.startdate,
+        enddate: result.enddate,
+        owner_id: result.owner_id,
+        students: [
+          {
+            firstname: user.firstname,
+            lastname: user.lastname,
+            exercises: [{}]
+          }
+        ]
+      }
+
+      console.log('result alkaa tästä:')
+      console.log(result3)
+      res.json(result3)
+    } else if (!user) {
+      console.log('no user')
       res.status(400)
-      res.send('User or Teachinginstance not found!')
+      res.send('User not found!')
+    } else if (!teachinginstance) {
+      console.log('no teachingInstance')
+      res.status(400)
+      res.send('Teachinginstance not found!')
+    } else {
+      console.log('Nolla nothing')
+      res.status(400)
+      res.send('No user and teachinginstance found')
     }
   } else {
     res.status(400)

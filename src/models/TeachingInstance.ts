@@ -5,5 +5,6 @@ export default interface Teachinginstance {
   startdate: Date
   enddate: Date
   coursematerial_name: string
-  coursematerial_version: number
+  version: number
+  owner_id: number
 }

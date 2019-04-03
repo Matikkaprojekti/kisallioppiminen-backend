@@ -22,17 +22,12 @@ export async function findOrCreateTeachinginstance(newTeachingInstance: Teaching
   return instance
 }
 
-export async function findTeachinginstanceByCoursekey(coursekey: string): Promise<Teachinginstance | null> {
-  const instance = await database('teachinginstances')
+export async function findTeachinginstanceByCoursekey(coursekey: string): Promise<Teachinginstance> {
+  console.log('menee1')
+  return await database('teachinginstances')
     .select('*')
     .where({ coursekey })
     .first()
-
-  if (instance) {
-    return instance
-  } else {
-    return undefined
-  }
 }
 
 // tslint:disable-next-line
