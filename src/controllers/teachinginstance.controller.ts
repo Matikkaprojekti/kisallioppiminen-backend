@@ -2,7 +2,8 @@ import { Router, Request, Response } from 'express'
 import passport from 'passport'
 import {
   findOrCreateTeachinginstance,
-  findTeachinginstanceByCoursekey
+  findTeachinginstanceByCoursekey,
+  findTeachingInstancesByOwnerId
 } from '../services/teachingInstanceService'
 import { findUserById } from '../services/userService'
 import {
@@ -95,16 +96,34 @@ router.patch(
 )
 
 router.get(
-  '/',
+  '/:teacher',
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
     const { user } = req
-
+    // Check if auth
     if (!user) {
       return res.status(401).json({ error: 'unauthorized' })
     }
 
-    res.json(await findTeachingInstancesWithUserId(user.id))
+    // Check that required params are present
+    const teacher = req.params.teacher
+    if (teacher !== 'true' && teacher !== 'false') {
+      return res
+        .status(400)
+        .json({ error: 'Path param teacher is not valid.' })
+    }
+
+    // Set boolean value isTeacher
+    let isTeacher = false
+    if (teacher === 'true') {
+      isTeacher = true
+    }
+
+    if (isTeacher) {
+      res.json(await findTeachingInstancesByOwnerId(user.id))
+    } else {
+      res.json(await findTeachingInstancesWithUserId(user.id))
+    }
   }
 )
 

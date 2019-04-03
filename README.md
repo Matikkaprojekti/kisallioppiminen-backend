@@ -18,13 +18,13 @@
 ### Tarjolla olevat urlit:
 
 | Metodi(t) | URL                  | Kuvaus                              |
-| --------- | ----------------------------------- | --------------------------------------------------------------- |
-| GET       | `/users/auth`                       | Authentikoi käyttäjän              				    |
-| GET       | `/users/me`                         | Hakee kirjautuneen käyttäjän tiedot				    |
-| POST      | `/teachinginstances`		  | Luo uuden opetusinstanssin          			    |
-| GET       | `/teachinginstances` 		  | Hakee opetusinstanssit joihin opiskelija on liittynyt           |
-| PATCH     | `/teachinginstances` 		  | Liittää käyttäjän opetusinstanssiin 			    |
-| PUT       | `/trafficlights/:exercise_uuid`	  | Opiskelija klikkaa liikennevaloa...  			    |
+| --------- | ----------------------------------- | ------------------------------------------------------------------ |
+| GET       | `/users/auth`                       | Authentikoi käyttäjän              				       |
+| GET       | `/users/me`                         | Hakee kirjautuneen käyttäjän tiedot				       |
+| POST      | `/teachinginstances`		  | Luo uuden opetusinstanssin          			       |
+| GET       | `/teachinginstances/:teacher`       | Hakee opetusinstanssit joilla käyttäjä on omistaja tai opiskelija  |
+| PATCH     | `/teachinginstances` 		  | Liittää käyttäjän opetusinstanssiin 			       |
+| PUT       | `/trafficlights/:exercise_uuid`	  | Opiskelija klikkaa liikennevaloa...  			       |
 
 -------------
 
@@ -57,8 +57,9 @@ Response body format:
 ```
 
 ----------
-#### GET `/teachinginstances/`
-- Request-body on tyhjä, koska käyttäjätiedot saadaan authista.
+#### GET `/teachinginstances/:teacher`
+- `/teachinginstances/true` palauttaa kurssit, joilla käyttäjä on luonut.
+- `/teachinginstances/false` palauttaa kurssit, joille käyttäjä on liittynyt opiskelijaksi.
 
 Request body format: 
 ```json
@@ -143,33 +144,6 @@ Response body format:
             ]
         }
     ]
-}
-```
-------------
-#### POST `/trafficlights/`
-- Coursekey ei ole case-sensitive. Jos post pyynnössä on isoja kirjaimia ne muutetaan backendissä pieniksi.
-
-Request body format: 
-```json
-{
-	"user_id": 1,
-	"status": ["green", "yellow", "red"],
-	"coursekey":"kissalan lukio", 
-	"exercise_uuid":"asdaasd-asd11sdasd-asdeasd-asdadwasda-asdasdwasd"
-	
-}
-```
-Response body format:
-```json
-{
- "status": ["green", "yellow", "red"]
-}
-```
-Error body format:
-- Statuscode 400
-```json
-{
- "error":"Failed to save your click to database :("
 }
 ```
 ------------

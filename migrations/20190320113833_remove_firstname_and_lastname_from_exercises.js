@@ -6,16 +6,14 @@ exports.up = function(knex, Promise) {
 }
 
 exports.down = function(knex, Promise) {
-  return knex.schema.table(table => {
-    knex.schema.alterTable('exercises', table => {
-      table
-        .string('firstname')
-        .notNull()
-        .defaultTo('undefined')
-      table
-        .string('lastname')
-        .notNull()
-        .defaultTo('undefined')
-    })
+  return knex.schema.alterTable('exercises', table => {
+    table
+      .string('firstname')
+      .notNull()
+      .defaultTo('undefined')
+    table
+      .string('lastname')
+      .notNull()
+      .defaultTo('undefined')
   })
 }
