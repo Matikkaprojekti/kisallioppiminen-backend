@@ -2,8 +2,15 @@
 
 ### Ohjeet backendin lokaaliin devauskäyttöön:
 1. Asenna postgresql ja luo postgresql käyttäjä 
-* https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-16-04
-* https://www.postgresql.org/docs/9.1/app-createuser.html
+
+```
+sudo apt-get update
+sudo apt-get install postgresql postgresql-contrib
+sudo -u postgres psql
+postgres=# create database kisallioppiminen;
+postgres=# create user myuser with encrypted password 'mypass';
+postgres=# grant all privileges on database kisallioppiminen to myuser;
+```
 
 2. `git clone git@github.com:Matikkaprojekti/kisallioppiminen-backend.git && cd kisallioppiminen-backend/`
 3. Kopioi .env.example -> .env ja täytä kentät. Huom tarvitset GOOGLE_CLIENT_ID ja GOOGLE_CLIENT_SECRET joltain projektilaiselta!
