@@ -1,15 +1,31 @@
 # kisallioppiminen-backend
 
 ### Ohjeet backendin lokaaliin devauskäyttöön:
-1. Asenna postgresql ja luo postgresql käyttäjä
+1. Asenna postgresql ja luo postgresql käyttäjä 
+* https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-16-04
+* https://www.postgresql.org/docs/9.1/app-createuser.html
+
 2. `git clone git@github.com:Matikkaprojekti/kisallioppiminen-backend.git && cd kisallioppiminen-backend/`
-3. Kopioi .env.example -> .env ja täytä kentät
+3. Kopioi .env.example -> .env ja täytä kentät. Huom tarvitset GOOGLE_CLIENT_ID ja GOOGLE_CLIENT_SECRET joltain projektilaiselta!
+
+```
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+NODE_ENV=dev
+APP_PORT=8000
+DATABASE_USER=eero
+DATABASE_URL=localhost
+DATABASE_PASSWORD=
+DATABASE_PORT=5432
+DATABASE_NAME=kisallioppiminen
+PROD_URL=
+FRONTEND_URL 
+```
+
 4. `npm install`
-5. node_modules/.bin/knex init
-6. Luodaan tietokanta komennolla node scripts/createDatabase.js
-7. node_modules/.bin/knex migrate:latest
-8. `npm run watch`
-9. Testaa lokaalin backendin toimivuus menemällä [tänne](http://localhost:8000/)
+5. ` node_modules/.bin/knex migrate:latest `
+6. `npm run watch`
+7. Testaa lokaalin backendin toimivuus menemällä [tänne](http://localhost:8000/)
 
 ### Tietokannan kuvaus:
 
