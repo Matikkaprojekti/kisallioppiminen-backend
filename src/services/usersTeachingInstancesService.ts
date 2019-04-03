@@ -4,6 +4,7 @@ import Teachinginstance from '../models/TeachingInstance'
 import R from 'ramda'
 import { ApiCourseInstanceObject } from '../types/apiTypes'
 import Trafficlight from '../models/Trafficlight'
+import User from '../models/User'
 
 export async function findOrCreateUsersTeachinginstance(newUsersTeachinginstance: UsersTeachinginstance): Promise<UsersTeachinginstance> {
   const instance = await database('usersteachinginstances')
@@ -44,14 +45,15 @@ export async function findTeachingInstancesWithUserId(userId: number): Promise<A
   const trafficlightPromise = database('trafficlights')
     .select()
     .where({ user_id: userId })
+    .innerJoin('users', 'users.id', '=', 'trafficlights.user_id')
 
   return Promise.all([userTeachingInstancePromise, trafficlightPromise]).then(([userTeachingInstance, trafficlights]) => formatUserTeachingInstanceData(userTeachingInstance, trafficlights))
 
   // Reverse and return the list
 }
 
-function formatUserTeachingInstanceData(array: Array<UsersTeachinginstance & Teachinginstance>, trafficlights: Trafficlight[]): ApiCourseInstanceObject[] {
-  console.log(trafficlights)
+function formatUserTeachingInstanceData(array: Array<UsersTeachinginstance & Teachinginstance>, trafficlights: Array<Trafficlight & User>): ApiCourseInstanceObject[] {
+  const { firstname, lastname } = trafficlights[0]
   return array.map(
     R.pipe(
       R.pick(['coursekey', 'coursematerial_name', 'version', 'name', 'startdate', 'enddate', 'owner_id']),
@@ -65,8 +67,8 @@ function formatUserTeachingInstanceData(array: Array<UsersTeachinginstance & Tea
         owner_id,
         students: [
           {
-            firstname: 'asd',
-            lastname: 'asd',
+            firstname,
+            lastname,
             exercises: trafficlights.filter(({ coursekey: ck }) => ck === coursekey).map(({ exercise_uuid, status }) => ({ uuid: exercise_uuid, status: String(status) }))
           }
         ]
