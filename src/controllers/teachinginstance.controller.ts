@@ -8,7 +8,6 @@ const router: Router = Router()
 
 // Create a teachinginstance
 router.post('/', passport.authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
-  console.log('asdasdadsdasda')
   const { user } = req
   const { coursekey, name, startdate, enddate, coursematerial_name, version } = req.body
 
@@ -17,7 +16,7 @@ router.post('/', passport.authenticate('jwt', { session: false }), async (req: R
   }
 
   // tslint:disable-next-line
-  const owner_id = user.id;
+  const owner_id = user.id
 
   console.log('owner_id', owner_id)
 
@@ -38,7 +37,7 @@ router.post('/', passport.authenticate('jwt', { session: false }), async (req: R
 // jotain
 router.patch('/', passport.authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
   const { user } = req
-  const coursekey = req.body.coursekey
+  const coursekey = req.body.coursekey.toLowerCase()
 
   console.log('Trimmed coursekey', coursekey)
 
