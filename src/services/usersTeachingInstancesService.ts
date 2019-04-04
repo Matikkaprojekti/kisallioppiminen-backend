@@ -53,7 +53,7 @@ export async function findTeachingInstancesWithUserId(userId: number): Promise<A
 }
 
 function formatUserTeachingInstanceData(array: Array<UsersTeachinginstance & Teachinginstance>, trafficlights: Array<Trafficlight & User>): ApiCourseInstanceObject[] {
-  const { firstname, lastname } = trafficlights[0]
+  // const { firstname, lastname } = trafficlights[0]
   return array.map(
     R.pipe(
       R.pick(['coursekey', 'coursematerial_name', 'version', 'name', 'startdate', 'enddate', 'owner_id']),
@@ -67,8 +67,8 @@ function formatUserTeachingInstanceData(array: Array<UsersTeachinginstance & Tea
         owner_id,
         students: [
           {
-            firstname,
-            lastname,
+            firstname: 'Tuntematon',
+            lastname: 'Sotilas',
             exercises: trafficlights.filter(({ coursekey: ck }) => ck === coursekey).map(({ exercise_uuid, status }) => ({ uuid: exercise_uuid, status: String(status) }))
           }
         ]
