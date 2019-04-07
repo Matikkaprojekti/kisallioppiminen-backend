@@ -109,15 +109,13 @@ router.get('/:teacher', passport.authenticate('jwt', { session: false }), async 
   }
 
   // Set boolean value isTeacher
-  let isTeacher = false
-  if (teacher === 'true') {
-    isTeacher = true
-  }
-
+  const isTeacher = teacher === 'true'
   if (isTeacher) {
     res.json(await findTeachingInstancesByOwnerId(user.id))
   } else {
-    res.json(await findTeachingInstancesWithUserId(user.id))
+    const result = await findTeachingInstancesWithUserId(user.id)
+    console.log(result)
+    res.json(result)
   }
 })
 
