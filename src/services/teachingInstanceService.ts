@@ -41,11 +41,9 @@ export async function findTeachingInstancesByOwnerId(owner_id: number): Promise<
     .where({ owner_id })
     .leftJoin('usersteachinginstances', 'usersteachinginstances.course_coursekey', '=', 'teachinginstances.coursekey')
 
-  const studentsPromise = database('trafficlights')
-    .leftJoin('users', 'users.id', '=', 'trafficlights.user_id')
+  const studentsPromise = database('trafficlights').leftJoin('users', 'users.id', '=', 'trafficlights.user_id')
 
-  return Promise.all([userTeachingInstancePromise, studentsPromise])
-    .then(([userTeachingInstances, students]) => formatTeachingInstanceQueryData(userTeachingInstances, students))
+  return Promise.all([userTeachingInstancePromise, studentsPromise]).then(([userTeachingInstances, students]) => formatTeachingInstanceQueryData(userTeachingInstances, students))
 }
 
 /**
@@ -59,23 +57,21 @@ function formatTeachingInstanceQueryData(userTeachingInstances: Array<Teachingin
     courseInstanceMap.set(row.coursekey, R.pick(['coursekey', 'courseinfo', 'name', 'startdate', 'enddate', 'coursematerial_name', 'version', 'owner_id'], row))
   })
 
-  students.forEach(({id, firstname, lastname, coursekey}) => {
-    const userExercises = students
-      .filter(({user_id, coursekey: ck}) => user_id === id && ck === coursekey)
-      .map(({exercise_uuid, status}) => ({uuid: exercise_uuid, status: String(status)}))
+  students.forEach(({ id, firstname, lastname, coursekey }) => {
+    const userExercises = students.filter(({ user_id, coursekey: ck }) => user_id === id && ck === coursekey).map(({ exercise_uuid, status }) => ({ uuid: exercise_uuid, status: String(status) }))
     if (studentsMap.has(coursekey)) {
+      studentsMap.get(coursekey).push({ firstname, lastname, exercises: userExercises })
       return
     }
-    studentsMap.set(coursekey, [{ firstname, lastname, exercises: userExercises}])
+    studentsMap.set(coursekey, [{ firstname, lastname, exercises: userExercises }])
   })
 
-  const apiCourseObject: ApiCourseInstanceObject[] = Array.from(courseInstanceMap.values())
-    .map(courseInstance => ({
-      ...courseInstance,
-      startdate: String(courseInstance.startdate),
-      enddate: String(courseInstance.enddate),
-      students: studentsMap.get(courseInstance.coursekey) || [] // empty array for persistance
-    }))
+  const apiCourseObject: ApiCourseInstanceObject[] = Array.from(courseInstanceMap.values()).map(courseInstance => ({
+    ...courseInstance,
+    startdate: String(courseInstance.startdate),
+    enddate: String(courseInstance.enddate),
+    students: studentsMap.get(courseInstance.coursekey) || [] // empty array for persistance
+  }))
 
   return apiCourseObject
 }
