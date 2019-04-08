@@ -104,6 +104,10 @@ router.delete('/:coursekey', passport.authenticate('jwt', { session: false }), a
   const { user } = req
   const coursekey = req.params.coursekey.toLowerCase()
 
+  if (!user) {
+    return res.status(401).json({ error: 'unauthorized' })
+  }
+
   try {
     await removeTeachingInstanceWithUserIdAndCoursekey(user.id, coursekey)
     return res.status(204)
