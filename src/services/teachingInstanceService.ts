@@ -6,25 +6,35 @@ import R from 'ramda'
 import User from '../models/User'
 import { ApiStudentObject, ApiCourseInstanceObject } from '../types/apiTypes'
 
-export async function findOrCreateTeachinginstance(newTeachingInstance: Teachinginstance): Promise<Teachinginstance> {
+export async function findOrCreateTeachinginstance(newTeachingInstance: Teachinginstance): Promise<ApiCourseInstanceObject> {
   const { coursekey } = newTeachingInstance
-  const instance = await database('teachinginstances')
+  const instance: Teachinginstance = await database('teachinginstances')
     .select()
     .where({ coursekey })
     .first()
 
   if (!instance) {
-    const temp = await database('teachinginstances').insert(newTeachingInstance)
+    await database('teachinginstances').insert(newTeachingInstance)
 
-    const newlyCreatedinstance = await database('teachinginstances')
+    const newlyCreatedinstance: Teachinginstance = await database('teachinginstances')
       .select()
       .where({ coursekey })
       .first()
 
-    return newlyCreatedinstance
+    return {
+      ...R.pick(['coursekey', 'name', 'startdate', 'enddate', 'coursematerial_name', 'version', 'owner_id'], newlyCreatedinstance),
+      startdate: String(newTeachingInstance.startdate),
+      enddate: String(newlyCreatedinstance.enddate),
+      students: []
+    }
   }
 
-  return instance
+  return {
+    ...R.pick(['coursekey', 'name', 'startdate', 'enddate', 'coursematerial_name', 'version', 'owner_id'], instance),
+    startdate: String(instance.startdate),
+    enddate: String(instance.enddate),
+    students: []
+  }
 }
 
 export async function findTeachinginstanceByCoursekey(coursekey: string): Promise<Teachinginstance> {
