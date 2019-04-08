@@ -51,7 +51,7 @@ export async function findTeachingInstancesWithUserId(userId: number): Promise<A
 }
 
 function formatUserTeachingInstanceData(array: Array<UsersTeachinginstance & Teachinginstance>, trafficlights: Array<Trafficlight & User>): ApiCourseInstanceObject[] {
-  const { firstname, lastname } = trafficlights.length > 0 ? trafficlights[0] : {firstname: 'placeholder', lastname: 'placeholder'}
+  const { firstname, lastname } = trafficlights.length > 0 ? trafficlights[0] : { firstname: 'placeholder', lastname: 'placeholder' }
   return array.map(
     R.pipe(
       R.pick(['coursekey', 'coursematerial_name', 'version', 'name', 'startdate', 'enddate', 'owner_id']),
