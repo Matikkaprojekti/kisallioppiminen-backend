@@ -181,7 +181,6 @@ Request body format:
 Response body format:
 ```json
 {
-	"message":"Update finished."
 }
 ```
 ------------
