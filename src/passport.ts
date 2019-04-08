@@ -47,11 +47,9 @@ export const passportInitializer = (app: any) => {
         secretOrKey: process.env.JWT_SECRET
       },
       ({ userId }, done) => {
-        console.log('userId = ', userId)
         findUserById(userId)
           .then(user => {
             done(null, user)
-            console.log('user = ', user)
           })
           .catch(e => {
             done(e, null)

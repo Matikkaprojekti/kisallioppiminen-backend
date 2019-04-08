@@ -8,5 +8,5 @@ export default interface Trafficlight {
   exercise_uuid: string
   coursekey: string
   status: StatusOptions
-  user_id: string
+  user_id: number
 }
