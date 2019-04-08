@@ -27,6 +27,12 @@ export async function findOrCreateUsersTeachinginstance(newUsersTeachinginstance
   return instance
 }
 
+export async function removeTeachingInstanceWithUserIdAndCoursekey(userId: number, coursekey: string) {
+  await database('usersteachinginstances')
+    .delete()
+    .where({ user_id: userId, course_coursekey: coursekey })
+}
+
 export async function findTeachingInstanceWithUserIdAndCoursekey(userId: number, coursekey: string): Promise<ApiCourseInstanceObject> {
   return await database('usersteachinginstances')
     .select()

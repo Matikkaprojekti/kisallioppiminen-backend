@@ -2,7 +2,12 @@ import { Router, Request, Response } from 'express'
 import passport from 'passport'
 import { findOrCreateTeachinginstance, findTeachinginstanceByCoursekey, findTeachingInstancesByOwnerId } from '../services/teachingInstanceService'
 import { findUserById } from '../services/userService'
-import { findOrCreateUsersTeachinginstance, findTeachingInstancesWithUserId, findTeachingInstanceWithUserIdAndCoursekey } from '../services/usersTeachingInstancesService'
+import {
+  findOrCreateUsersTeachinginstance,
+  findTeachingInstancesWithUserId,
+  findTeachingInstanceWithUserIdAndCoursekey,
+  removeTeachingInstanceWithUserIdAndCoursekey
+} from '../services/usersTeachingInstancesService'
 
 const router: Router = Router()
 
@@ -92,6 +97,18 @@ router.patch('/', passport.authenticate('jwt', { session: false }), async (req: 
   } else {
     res.status(400)
     res.send('Very BAD request.')
+  }
+})
+
+router.delete('/:coursekey', passport.authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
+  const { user } = req
+  const coursekey = req.params.coursekey.toLowerCase()
+
+  try {
+    await removeTeachingInstanceWithUserIdAndCoursekey(user.id, coursekey)
+    return res.status(204)
+  } catch (error) {
+    return res.status(404)
   }
 })
 
