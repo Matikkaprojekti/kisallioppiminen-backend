@@ -26,10 +26,16 @@ router.post('/', passport.authenticate('jwt', { session: false }), async (req: R
     const result = findOrCreateTeachinginstance({
       ...req.body,
       owner_id
-    }).then(r => res.json(r))
+    }).then(r => {
+      if (r === undefined) {
+        res.status(400).json({ error: 'Coursekey already exists!' })
+      } else {
+        res.json(r)
+      }
+    })
   } else {
     res.status(400)
-    res.json({ error: 'Bad request' })
+    res.json({ error: 'Bad request!' })
   }
 })
 
