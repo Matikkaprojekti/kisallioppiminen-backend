@@ -22,7 +22,7 @@ router.post('/', passport.authenticate('jwt', { session: false }), async (req: R
   }
 
   // tslint:disable-next-line
-  const owner_id = user.id;
+  const owner_id = user.id
 
   console.log('owner_id', owner_id)
 
@@ -59,7 +59,12 @@ router.patch('/', passport.authenticate('jwt', { session: false }), async (req: 
     if (user && teachinginstance) {
       console.log('Lisätään käyttäjä opetusinstanssiin...')
       const newInstances = { user_id: user.id, course_coursekey: coursekey }
-      await findOrCreateUsersTeachinginstance(newInstances)
+      const created = await findOrCreateUsersTeachinginstance(newInstances)
+
+      if (!created) {
+        return res.status(400).send('You have already joined this course instance')
+      }
+
       const result = await findTeachingInstanceWithUserIdAndCoursekey(user.id, coursekey)
 
       const result3 = {
@@ -107,10 +112,6 @@ router.delete('/:coursekey', passport.authenticate('jwt', { session: false }), a
     return res.status(401).json({ error: 'unauthorized' })
   }
   const coursekey = req.params.coursekey.toLowerCase()
-
-  if (!user) {
-    return res.status(401).json({ error: 'unauthorized' })
-  }
 
   try {
     await removeTeachingInstanceWithUserIdAndCoursekey(user.id, coursekey)

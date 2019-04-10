@@ -6,7 +6,7 @@ import { ApiCourseInstanceObject } from '../types/apiTypes'
 import Trafficlight from '../models/Trafficlight'
 import User from '../models/User'
 
-export async function findOrCreateUsersTeachinginstance(newUsersTeachinginstance: UsersTeachinginstance): Promise<UsersTeachinginstance> {
+export async function findOrCreateUsersTeachinginstance(newUsersTeachinginstance: UsersTeachinginstance): Promise<boolean> {
   const instance = await database('usersteachinginstances')
     .select()
     .where({ user_id: newUsersTeachinginstance.user_id, course_coursekey: newUsersTeachinginstance.course_coursekey })
@@ -21,10 +21,10 @@ export async function findOrCreateUsersTeachinginstance(newUsersTeachinginstance
       .select()
       .where({ user_id, course_coursekey })
 
-    return newlyCreatedinstance
+    return true
   }
 
-  return instance
+  return false
 }
 
 export async function removeTeachingInstanceWithUserIdAndCoursekey(userId: number, coursekey: string) {
