@@ -2,7 +2,13 @@ import { Router, Request, Response } from 'express'
 import passport from 'passport'
 import { findOrCreateTeachinginstance, findTeachinginstanceByCoursekey, findTeachingInstancesByOwnerId } from '../services/teachingInstanceService'
 import { findUserById } from '../services/userService'
-import { findOrCreateUsersTeachinginstance, findTeachingInstancesWithUserId, findTeachingInstanceWithUserIdAndCoursekey } from '../services/usersTeachingInstancesService'
+import {
+  findOrCreateUsersTeachinginstance,
+  findTeachingInstancesWithUserId,
+  findTeachingInstanceWithUserIdAndCoursekey,
+  removeTeachingInstanceWithUserIdAndCoursekey
+} from '../services/usersTeachingInstancesService'
+import { resolve } from 'bluebird'
 
 const router: Router = Router()
 
@@ -16,7 +22,7 @@ router.post('/', passport.authenticate('jwt', { session: false }), async (req: R
   }
 
   // tslint:disable-next-line
-  const owner_id = user.id
+  const owner_id = user.id;
 
   console.log('owner_id', owner_id)
 
@@ -98,6 +104,22 @@ router.patch('/', passport.authenticate('jwt', { session: false }), async (req: 
   } else {
     res.status(400)
     res.send('Very BAD request.')
+  }
+})
+
+router.delete('/:coursekey', passport.authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
+  const { user } = req
+  if (!user) {
+    return res.status(401).json({ error: 'unauthorized' })
+  }
+  const coursekey = req.params.coursekey.toLowerCase()
+
+  try {
+    await removeTeachingInstanceWithUserIdAndCoursekey(user.id, coursekey)
+    return res.status(204).json({ message: 'Update finished.' })
+  } catch (error) {
+    res.status(404)
+    res.json('')
   }
 })
 
