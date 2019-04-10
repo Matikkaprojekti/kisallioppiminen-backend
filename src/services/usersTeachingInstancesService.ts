@@ -56,6 +56,14 @@ export async function findTeachingInstancesWithUserId(userId: number): Promise<A
   return Promise.all([userTeachingInstancePromise, trafficlightPromise]).then(([userTeachingInstance, trafficlights]) => formatUserTeachingInstanceData(userTeachingInstance, trafficlights))
 }
 
+export function isUserAlreadyInCourse(userId: number, coursekey: string) {
+  return database('usersteachinginstances')
+    .count()
+    .where({user_id: userId, course_coursekey: coursekey})
+    .first()
+    .then(({count}) => count > 0)
+}
+
 function formatUserTeachingInstanceData(array: Array<UsersTeachinginstance & Teachinginstance>, trafficlights: Array<Trafficlight & User>): ApiCourseInstanceObject[] {
   const { firstname, lastname } = trafficlights.length > 0 ? trafficlights[0] : { firstname: '', lastname: '' }
   return array.map(

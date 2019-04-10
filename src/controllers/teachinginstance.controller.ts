@@ -6,7 +6,8 @@ import {
   findOrCreateUsersTeachinginstance,
   findTeachingInstancesWithUserId,
   findTeachingInstanceWithUserIdAndCoursekey,
-  removeTeachingInstanceWithUserIdAndCoursekey
+  removeTeachingInstanceWithUserIdAndCoursekey,
+  isUserAlreadyInCourse
 } from '../services/usersTeachingInstancesService'
 import { resolve } from 'bluebird'
 
@@ -58,12 +59,16 @@ router.patch('/', passport.authenticate('jwt', { session: false }), async (req: 
     console.log('Checking if coursekey and user_id exists...')
 
     const teachinginstance = await findTeachinginstanceByCoursekey(coursekey)
+    const isUserInCourse = await isUserAlreadyInCourse(user.id, coursekey)
     await console.log('teachinginstance: ', teachinginstance)
 
     console.log('user ', user)
     console.log('teachinginstance', teachinginstance)
     if (user && teachinginstance) {
-      console.log('Lisätään käyttäjä opetusinstanssiin...')
+      const isUserInCourse = await isUserAlreadyInCourse(user.id, coursekey)
+      if (isUserInCourse) {
+        return res.status(403).json({error: 'User is already in course'})
+      }
       const newInstances = { user_id: user.id, course_coursekey: coursekey }
       await findOrCreateUsersTeachinginstance(newInstances)
       const result = await findTeachingInstanceWithUserIdAndCoursekey(user.id, coursekey)
@@ -90,20 +95,15 @@ router.patch('/', passport.authenticate('jwt', { session: false }), async (req: 
       res.json(result3)
     } else if (!user) {
       console.log('no user')
-      res.status(400)
-      res.send('User not found!')
+      res.status(401).json({error: 'Unauthorized'})
     } else if (!teachinginstance) {
-      console.log('no teachingInstance')
-      res.status(400)
-      res.send('Teachinginstance not found!')
+      res.status(400).json({error: 'No such teaching instance'})
     } else {
       console.log('Nolla nothing')
-      res.status(400)
-      res.send('No user and teachinginstance found')
+      res.status(400).json({error: 'No user or teachinginstance found'})
     }
   } else {
-    res.status(400)
-    res.send('Very BAD request.')
+    res.status(400).json({error: 'No course key in body'})
   }
 })
 
