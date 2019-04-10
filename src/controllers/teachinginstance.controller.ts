@@ -8,6 +8,7 @@ import {
   findTeachingInstanceWithUserIdAndCoursekey,
   removeTeachingInstanceWithUserIdAndCoursekey
 } from '../services/usersTeachingInstancesService'
+import { resolve } from 'bluebird'
 
 const router: Router = Router()
 
@@ -21,7 +22,7 @@ router.post('/', passport.authenticate('jwt', { session: false }), async (req: R
   }
 
   // tslint:disable-next-line
-  const owner_id = user.id
+  const owner_id = user.id;
 
   console.log('owner_id', owner_id)
 
@@ -102,6 +103,9 @@ router.patch('/', passport.authenticate('jwt', { session: false }), async (req: 
 
 router.delete('/:coursekey', passport.authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
   const { user } = req
+  if (!user) {
+    return res.status(401).json({ error: 'unauthorized' })
+  }
   const coursekey = req.params.coursekey.toLowerCase()
 
   if (!user) {
@@ -110,9 +114,10 @@ router.delete('/:coursekey', passport.authenticate('jwt', { session: false }), a
 
   try {
     await removeTeachingInstanceWithUserIdAndCoursekey(user.id, coursekey)
-    return res.status(204)
+    return res.status(204).json({ message: 'Update finished.' })
   } catch (error) {
-    return res.status(404)
+    res.status(404)
+    res.json('')
   }
 })
 
