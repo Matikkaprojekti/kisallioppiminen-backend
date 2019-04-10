@@ -27,13 +27,10 @@ export async function findOrCreateTeachinginstance(newTeachingInstance: Teaching
       enddate: String(newlyCreatedinstance.enddate),
       students: []
     }
-  }
-
-  return {
-    ...R.pick(['coursekey', 'name', 'startdate', 'enddate', 'coursematerial_name', 'version', 'owner_id'], instance),
-    startdate: String(instance.startdate),
-    enddate: String(instance.enddate),
-    students: []
+  } else {
+    // Jos kurssiavain on jo käytetty, palautetaan undefined, jolloin responsessa palautetaan error.
+    console.log('RETURNING UNDEFINED FROM BACKEND')
+    return undefined
   }
 }
 
