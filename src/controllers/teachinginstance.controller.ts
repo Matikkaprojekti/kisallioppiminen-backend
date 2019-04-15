@@ -59,7 +59,6 @@ router.patch('/', passport.authenticate('jwt', { session: false }), async (req: 
     console.log('Checking if coursekey and user_id exists...')
 
     const teachinginstance = await findTeachinginstanceByCoursekey(coursekey)
-    const isUserInCourse = await isUserAlreadyInCourse(user.id, coursekey)
     await console.log('teachinginstance: ', teachinginstance)
 
     console.log('user ', user)
