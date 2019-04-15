@@ -34,9 +34,19 @@ FRONTEND_URL
 6. `npm run watch`
 7. Testaa lokaalin backendin toimivuus menemällä [tänne](http://localhost:8000/)
 
+-----
+
 ### Tietokannan kuvaus:
 
 ![tietokantakuva](/readme_images/tietokanta.png)
+
+-----
+
+### Infrakaavio:
+
+![infrakaavio](/readme_images/infrakaavio.png)
+
+-----
 
 ### Tarjolla olevat urlit:
 
