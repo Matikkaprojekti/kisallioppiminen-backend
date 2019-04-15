@@ -79,7 +79,7 @@ export async function findTeachingInstancesByOwnerId(owner_id: number): Promise<
  */
 
 // tslint:disable-next-line
-export async function findTeachingInstancesByOwnerId(owner_id: number) {
+export async function findTeachingInstancesByOwnerId(owner_id: number): Promise<ApiCourseInstanceObject[]> {
   const usersInstances: Teachinginstance[] = await database('teachinginstances')
     .select()
     .where({ owner_id })
@@ -92,29 +92,29 @@ export async function findTeachingInstancesByOwnerId(owner_id: number) {
         ...instance,
         startdate: String(instance.startdate),
         enddate: String(instance.enddate),
-        students: await getStudentList(instance.coursekey)
+        students: await getStudentList(instance.coursekey) || []
       }))
     )
   )
 
-  async function getStudentList(coursekey: string) {
-    const studentlist = await database('usersteachinginstances')
+  async function getStudentList(coursekey: string): Promise<ApiStudentObject[]> {
+    const studentlist: Array<{ firstname: string; lastname: string; id: number }> = await database('usersteachinginstances')
       .select('firstname', 'lastname', 'id')
       .where({ course_coursekey: coursekey })
       .leftJoin('users', 'user_id', '=', 'users.id')
 
-    console.log('Tällä kurssilla on seuraavat opiskelijat:', studentlist)
+    console.log('Tällä kurssilla (', coursekey, ') on seuraavat opiskelijat:', studentlist)
 
-    const result = await studentlist.map(async (student: any) => {
-      return await {
+    const result: Array<Promise<ApiStudentObject>> = await studentlist.map(async (student: { firstname: string; lastname: string; id: number }) => {
+      return {
         firstname: student.firstname,
         lastname: student.lastname,
-        exercises: await getExerciseList(coursekey, student.id)
+        exercises: await getExerciseList(coursekey, student.id) || []
       }
     })
 
-    async function getExerciseList(coursekey: string, id: number) {
-      const exerciselist = await database('trafficlights')
+    async function getExerciseList(coursekey: string, id: number): Promise<Array<{ uuid: string; status: string }>> {
+      const exerciselist: Promise<Array<{ uuid: string; status: string }>> = await database('trafficlights')
         .select('uuid', 'status')
         .where({ coursekey, user_id: id })
 
@@ -122,7 +122,7 @@ export async function findTeachingInstancesByOwnerId(owner_id: number) {
       return exerciselist
     }
 
-    console.log('Tässä on lista kurssin opiskelijoista, tehtävineen:', result)
+    console.log('Tässä on lista kurssin (', coursekey, ') opiskelijoista, tehtävineen:', result)
     return Promise.all(result)
   }
 }
