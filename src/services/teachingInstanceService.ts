@@ -32,24 +32,7 @@ export async function findTeachinginstanceByCoursekey(coursekey: string): Promis
     .select('*')
     .where({ coursekey })
     .first()
-}
-
-// tslint:disable-next-line
-/*
-export async function findTeachingInstancesByOwnerId(owner_id: number): Promise<ApiCourseInstanceObject[] | null> {
-  const userTeachingInstancePromise = database('teachinginstances')
-    .select()
-    .where({ owner_id })
-    .leftJoin('usersteachinginstances', 'usersteachinginstances.course_coursekey', '=', 'teachinginstances.coursekey')
-
-  const studentsPromise = database('users').leftJoin('trafficlights', 'trafficlights.user_id', '=', 'users.id')
-
-  return Promise.all([userTeachingInstancePromise, studentsPromise]).then(([userTeachingInstances, students]) => formatTeachingInstanceQueryData(userTeachingInstances, students))
-}
-
-/**
- * This methods is not very scalable. Should be redone with more logical database queries.
- *//*
+} /*
 function formatTeachingInstanceQueryData(userTeachingInstances: Array<Teachinginstance & UsersTeachingInstance>, students: Array<User & Trafficlight>) {
 const courseInstanceMap = new Map<string, Teachinginstance>()
 const studentsMap = new Map<string, ApiStudentObject[]>()
@@ -76,39 +59,61 @@ students: studentsMap.get(courseInstance.coursekey) || [] // empty array for per
 
 return apiCourseObject
 }
-*/
+*/ // tslint:disable-next-line
+
+// tslint:disable-next-line
+/*
+export async function findTeachingInstancesByOwnerId(owner_id: number): Promise<ApiCourseInstanceObject[] | null> {
+  const userTeachingInstancePromise = database('teachinginstances')
+    .select()
+    .where({ owner_id })
+    .leftJoin('usersteachinginstances', 'usersteachinginstances.course_coursekey', '=', 'teachinginstances.coursekey')
+
+  const studentsPromise = database('users').leftJoin('trafficlights', 'trafficlights.user_id', '=', 'users.id')
+
+  return Promise.all([userTeachingInstancePromise, studentsPromise]).then(([userTeachingInstances, students]) => formatTeachingInstanceQueryData(userTeachingInstances, students))
+}
+
+/**
+ * This methods is not very scalable. Should be redone with more logical database queries.
+ */
+
 // tslint:disable-next-line
 export async function findTeachingInstancesByOwnerId(owner_id: number) {
   const usersInstances: Teachinginstance[] = await database('teachinginstances')
     .select()
     .where({ owner_id })
 
-  console.log('Tässä halutun käyttäjän instanssit: ', usersInstances)
+  console.log('Näillä kursseilla olet opettajana: ', usersInstances)
 
-  return Promise.all(Array.from(usersInstances.map(async instance => ({
-    ...instance,
-    startdate: String(instance.startdate),
-    enddate: String(instance.enddate),
-    students: await sisempitesti(instance.coursekey)
-  }))))
+  return Promise.all(
+    Array.from(
+      usersInstances.map(async instance => ({
+        ...instance,
+        startdate: String(instance.startdate),
+        enddate: String(instance.enddate),
+        students: await getStudentList(instance.coursekey)
+      }))
+    )
+  )
 
-  async function sisempitesti(coursekey: string) {
+  async function getStudentList(coursekey: string) {
     const studentlist = await database('usersteachinginstances')
       .select('firstname', 'lastname', 'id')
       .where({ course_coursekey: coursekey })
       .leftJoin('users', 'user_id', '=', 'users.id')
 
-    console.log('studenlist: ', studentlist)
+    console.log('Tällä kurssilla on seuraavat opiskelijat:', studentlist)
 
     const result = await studentlist.map(async (student: any) => {
       return await {
         firstname: student.firstname,
         lastname: student.lastname,
-        exercises: await sisintesti(coursekey, student.id)
+        exercises: await getExerciseList(coursekey, student.id)
       }
     })
 
-    async function sisintesti(coursekey: string, id: number) {
+    async function getExerciseList(coursekey: string, id: number) {
       const exerciselist = await database('trafficlights')
         .select('exercise_uuid', 'status')
         .where({ coursekey, user_id: id })
@@ -117,7 +122,7 @@ export async function findTeachingInstancesByOwnerId(owner_id: number) {
       return exerciselist
     }
 
-    console.log('tässä pitäisi olla oppilaat tehtävineen:', result)
+    console.log('Tässä on lista kurssin opiskelijoista, tehtävineen:', result)
     return Promise.all(result)
   }
 }
