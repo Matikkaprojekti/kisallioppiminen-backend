@@ -60,9 +60,9 @@ export async function findTeachingInstancesWithUserId(userId: number): Promise<A
 export function isUserAlreadyInCourse(userId: number, coursekey: string) {
   return database('usersteachinginstances')
     .count()
-    .where({user_id: userId, course_coursekey: coursekey})
+    .where({ user_id: userId, course_coursekey: coursekey })
     .first()
-    .then(({count}) => count > 0)
+    .then(({ count }) => count > 0)
 }
 
 function formatUserTeachingInstanceData(array: Array<UsersTeachinginstance & Teachinginstance>, trafficlights: Array<Trafficlight & User>): ApiCourseInstanceObject[] {
@@ -82,7 +82,7 @@ function formatUserTeachingInstanceData(array: Array<UsersTeachinginstance & Tea
           {
             firstname,
             lastname,
-            exercises: trafficlights.filter(({ coursekey: ck }) => ck === coursekey).map(({ exercise_uuid, status }) => ({ uuid: exercise_uuid, status: String(status) }))
+            exercises: trafficlights.filter(({ coursekey: ck }) => ck === coursekey).map(({ uuid, status }) => ({ uuid, status: String(status) }))
           }
         ]
       })

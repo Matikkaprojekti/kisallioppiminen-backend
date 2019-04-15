@@ -29,7 +29,6 @@ export async function findOrCreateTeachinginstance(newTeachingInstance: Teaching
     }
   } else {
     // Jos kurssiavain on jo käytetty, palautetaan undefined, jolloin responsessa palautetaan error.
-    console.log('RETURNING UNDEFINED FROM BACKEND')
     return undefined
   }
 }
@@ -42,58 +41,44 @@ export async function findTeachinginstanceByCoursekey(coursekey: string): Promis
 }
 
 // tslint:disable-next-line
-export async function findTeachingInstancesByOwnerId(owner_id: number): Promise<ApiCourseInstanceObject[] | null> {
-  const userTeachingInstancePromise = database('teachinginstances')
+export async function findTeachingInstancesByOwnerId(owner_id: number): Promise<ApiCourseInstanceObject[]> {
+  const usersInstances: Teachinginstance[] = await database('teachinginstances')
     .select()
     .where({ owner_id })
-    .leftJoin('usersteachinginstances', 'usersteachinginstances.course_coursekey', '=', 'teachinginstances.coursekey')
 
-  const studentsPromise = database('users').leftJoin('trafficlights', 'trafficlights.user_id', '=', 'users.id')
+  return Promise.all(
+    Array.from(
+      usersInstances.map(async instance => ({
+        ...instance,
+        startdate: String(instance.startdate),
+        enddate: String(instance.enddate),
+        students: (await getStudentList(instance.coursekey)) || []
+      }))
+    )
+  )
 
-  return Promise.all([userTeachingInstancePromise, studentsPromise]).then(([userTeachingInstances, students]) => formatTeachingInstanceQueryData(userTeachingInstances, students))
-}
+  async function getStudentList(coursekey: string): Promise<ApiStudentObject[]> {
+    const studentlist: Array<{ firstname: string; lastname: string; id: number }> = await database('usersteachinginstances')
+      .select('firstname', 'lastname', 'id')
+      .where({ course_coursekey: coursekey })
+      .leftJoin('users', 'user_id', '=', 'users.id')
 
-/**
- * This methods is not very scalable. Should be redone with more logical database queries.
- */
-function formatTeachingInstanceQueryData(userTeachingInstances: Array<Teachinginstance & UsersTeachingInstance>, students: Array<Trafficlight & User>) {
-  console.log('SUTUEUASUDUASUDUSADU:', students)
+    const result: Array<Promise<ApiStudentObject>> = await studentlist.map(async (student: { firstname: string; lastname: string; id: number }) => {
+      return {
+        firstname: student.firstname,
+        lastname: student.lastname,
+        exercises: (await getExerciseList(coursekey, student.id)) || []
+      }
+    })
 
-  const courseInstanceMap = new Map<string, Teachinginstance>()
-  const studentsMap = new Map<string, ApiStudentObject[]>()
-  const uidCourseInstanceMap = new Map<number, string[]>()
+    async function getExerciseList(coursekey: string, id: number): Promise<Array<{ uuid: string; status: string }>> {
+      const exerciselist: Promise<Array<{ uuid: string; status: string }>> = await database('trafficlights')
+        .select('uuid', 'status')
+        .where({ coursekey, user_id: id })
 
-  userTeachingInstances.forEach(row => {
-    courseInstanceMap.set(row.coursekey, R.pick(['coursekey', 'courseinfo', 'name', 'startdate', 'enddate', 'coursematerial_name', 'version', 'owner_id'], row))
-    if (uidCourseInstanceMap.has(row.user_id)) {
-      uidCourseInstanceMap.get(row.user_id).push(row.course_coursekey)
-    } else {
-      uidCourseInstanceMap.set(row.user_id, [row.course_coursekey])
+      return exerciselist
     }
-  })
 
-  console.log(uidCourseInstanceMap)
-  console.log(R.innerJoin((a, b) => a.user_id === b.id, userTeachingInstances, students))
-
-  students.forEach(({ id, firstname, lastname, coursekey }) => {
-    const userExercises = students
-      .filter(({ user_id, coursekey: ck }) => user_id === id && uidCourseInstanceMap.get(user_id).includes(ck))
-      .map(({ exercise_uuid, status }) => ({ uuid: exercise_uuid, status: String(status) }))
-    if (studentsMap.has(coursekey)) {
-      studentsMap.get(coursekey).push({ firstname, lastname, exercises: userExercises })
-      return
-    }
-    studentsMap.set(coursekey, [{ firstname, lastname, exercises: userExercises }])
-  })
-
-  const apiCourseObject: ApiCourseInstanceObject[] = Array.from(courseInstanceMap.values()).map(courseInstance => ({
-    ...courseInstance,
-    startdate: String(courseInstance.startdate),
-    enddate: String(courseInstance.enddate),
-    students: studentsMap.get(courseInstance.coursekey) || [] // empty array for persistance
-  }))
-
-  console.log('APIDOASDBEBBAS,', apiCourseObject.map(a => a.students))
-
-  return apiCourseObject
+    return Promise.all(result)
+  }
 }
