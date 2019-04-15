@@ -1,26 +1,36 @@
 import database from '../database'
 import Teachinginstance from '../models/TeachingInstance'
+import UsersTeachingInstance from '../models/UsersTeachingInstance'
+import Trafficlight from '../models/Trafficlight'
+import R from 'ramda'
+import User from '../models/User'
 import { ApiStudentObject, ApiCourseInstanceObject } from '../types/apiTypes'
 
-export async function findOrCreateTeachinginstance(newTeachingInstance: Teachinginstance): Promise<Teachinginstance> {
+export async function findOrCreateTeachinginstance(newTeachingInstance: Teachinginstance): Promise<ApiCourseInstanceObject> {
   const { coursekey } = newTeachingInstance
-  const instance = await database('teachinginstances')
+  const instance: Teachinginstance = await database('teachinginstances')
     .select()
     .where({ coursekey })
     .first()
 
   if (!instance) {
-    const temp = await database('teachinginstances').insert(newTeachingInstance)
+    await database('teachinginstances').insert(newTeachingInstance)
 
-    const newlyCreatedinstance = await database('teachinginstances')
+    const newlyCreatedinstance: Teachinginstance = await database('teachinginstances')
       .select()
       .where({ coursekey })
       .first()
 
-    return newlyCreatedinstance
+    return {
+      ...R.pick(['coursekey', 'name', 'startdate', 'enddate', 'coursematerial_name', 'version', 'owner_id'], newlyCreatedinstance),
+      startdate: String(newTeachingInstance.startdate),
+      enddate: String(newlyCreatedinstance.enddate),
+      students: []
+    }
+  } else {
+    // Jos kurssiavain on jo käytetty, palautetaan undefined, jolloin responsessa palautetaan error.
+    return undefined
   }
-
-  return instance
 }
 
 export async function findTeachinginstanceByCoursekey(coursekey: string): Promise<Teachinginstance> {
@@ -42,7 +52,7 @@ export async function findTeachingInstancesByOwnerId(owner_id: number): Promise<
         ...instance,
         startdate: String(instance.startdate),
         enddate: String(instance.enddate),
-        students: await getStudentList(instance.coursekey) || []
+        students: (await getStudentList(instance.coursekey)) || []
       }))
     )
   )
@@ -57,7 +67,7 @@ export async function findTeachingInstancesByOwnerId(owner_id: number): Promise<
       return {
         firstname: student.firstname,
         lastname: student.lastname,
-        exercises: await getExerciseList(coursekey, student.id) || []
+        exercises: (await getExerciseList(coursekey, student.id)) || []
       }
     })
 
