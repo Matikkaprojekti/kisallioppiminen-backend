@@ -47,6 +47,7 @@ export async function findTeachingInstancesWithUserId(userId: number): Promise<A
     .select()
     .where({ user_id: userId })
     .innerJoin('teachinginstances', 'usersteachinginstances.course_coursekey', '=', 'teachinginstances.coursekey')
+    .orderBy('joindate', 'desc')
 
   const trafficlightPromise = database('trafficlights')
     .select()
