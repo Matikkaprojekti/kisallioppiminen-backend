@@ -35,14 +35,14 @@ router.post('/', passport.authenticate('jwt', { session: false }), async (req: R
       owner_id
     }).then(r => {
       if (r === undefined) {
-        res.status(400).json({ error: 'Coursekey already exists!' })
+        res.status(400).json({ error: 'Kurssiavain on jo olemassa!' })
       } else {
         res.json(r)
       }
     })
   } else {
     res.status(400)
-    res.json({ error: 'Bad request!' })
+    res.json({ error: 'Virheellinen pyyntö!' })
   }
 })
 
@@ -67,7 +67,7 @@ router.patch('/', passport.authenticate('jwt', { session: false }), async (req: 
     if (user && teachinginstance) {
       const isUserInCourse = await isUserAlreadyInCourse(user.id, coursekey)
       if (isUserInCourse) {
-        return res.status(403).json({error: 'User is already in course'})
+        return res.status(403).json({ error: 'Käyttäjä on jo kurssilla' })
       }
       const newInstances = { user_id: user.id, course_coursekey: coursekey }
       await findOrCreateUsersTeachinginstance(newInstances)
@@ -95,15 +95,15 @@ router.patch('/', passport.authenticate('jwt', { session: false }), async (req: 
       res.json(result3)
     } else if (!user) {
       console.log('no user')
-      res.status(401).json({error: 'Unauthorized'})
+      res.status(401).json({ error: 'Luvaton pyyntö' })
     } else if (!teachinginstance) {
-      res.status(400).json({error: 'No such teaching instance'})
+      res.status(400).json({ error: 'Kurssia ei löydy' })
     } else {
       console.log('Nolla nothing')
-      res.status(400).json({error: 'No user or teachinginstance found'})
+      res.status(400).json({ error: 'Käyttäjää tai kurssia ei löytynyt' })
     }
   } else {
-    res.status(400).json({error: 'No course key in body'})
+    res.status(400).json({ error: 'Kurssiavain puuttuu' })
   }
 })
 
@@ -116,7 +116,7 @@ router.delete('/:coursekey', passport.authenticate('jwt', { session: false }), a
 
   try {
     await removeTeachingInstanceWithUserIdAndCoursekey(user.id, coursekey)
-    return res.status(204).json({ message: 'Update finished.' })
+    return res.status(204).json({ message: 'Päivitys valmis.' })
   } catch (error) {
     res.status(404)
     res.json('')
@@ -130,10 +130,10 @@ router.get('/:teacher', passport.authenticate('jwt', { session: false }), async 
     return res.status(401).json({ error: 'unauthorized' })
   }
 
-  // Check that required params are present
+  // Check that required params are present //Path param teacher is not valid
   const teacher = req.params.teacher
   if (teacher !== 'true' && teacher !== 'false') {
-    return res.status(400).json({ error: 'Path param teacher is not valid.' })
+    return res.status(400).json({ error: 'Virheelliset opettajan tiedot.' })
   }
 
   // Set boolean value isTeacher
