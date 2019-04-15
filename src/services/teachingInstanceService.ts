@@ -85,12 +85,12 @@ export async function findTeachingInstancesByOwnerId(owner_id: number) {
 
   console.log('Tässä halutun käyttäjän instanssit: ', usersInstances)
 
-  return await Array.from(usersInstances.map(async instance => ({
+  return Promise.all(Array.from(usersInstances.map(async instance => ({
     ...instance,
     startdate: String(instance.startdate),
     enddate: String(instance.enddate),
     students: await sisempitesti(instance.coursekey)
-  })))
+  }))))
 
   async function sisempitesti(coursekey: string) {
     const studentlist = await database('usersteachinginstances')
@@ -118,7 +118,7 @@ export async function findTeachingInstancesByOwnerId(owner_id: number) {
     }
 
     console.log('tässä pitäisi olla oppilaat tehtävineen:', result)
-    return await result
+    return Promise.all(result)
   }
 }
 
