@@ -2,7 +2,14 @@ import { Router, Request, Response } from 'express'
 import passport from 'passport'
 import { findOrCreateTeachinginstance, findTeachinginstanceByCoursekey, findTeachingInstancesByOwnerId } from '../services/teachingInstanceService'
 import { findUserById } from '../services/userService'
-import { findOrCreateUsersTeachinginstance, findTeachingInstancesWithUserId, findTeachingInstanceWithUserIdAndCoursekey } from '../services/usersTeachingInstancesService'
+import {
+  findOrCreateUsersTeachinginstance,
+  findTeachingInstancesWithUserId,
+  findTeachingInstanceWithUserIdAndCoursekey,
+  removeTeachingInstanceWithUserIdAndCoursekey,
+  isUserAlreadyInCourse
+} from '../services/usersTeachingInstancesService'
+import { resolve } from 'bluebird'
 
 const router: Router = Router()
 
@@ -16,7 +23,7 @@ router.post('/', passport.authenticate('jwt', { session: false }), async (req: R
   }
 
   // tslint:disable-next-line
-  const owner_id = user.id
+  const owner_id = user.id;
 
   console.log('owner_id', owner_id)
 
@@ -26,10 +33,16 @@ router.post('/', passport.authenticate('jwt', { session: false }), async (req: R
     const result = findOrCreateTeachinginstance({
       ...req.body,
       owner_id
-    }).then(r => res.json(r))
+    }).then(r => {
+      if (r === undefined) {
+        res.status(400).json({ error: 'Coursekey already exists!' })
+      } else {
+        res.json(r)
+      }
+    })
   } else {
     res.status(400)
-    res.json({ error: 'Bad request' })
+    res.json({ error: 'Bad request!' })
   }
 })
 
@@ -46,12 +59,16 @@ router.patch('/', passport.authenticate('jwt', { session: false }), async (req: 
     console.log('Checking if coursekey and user_id exists...')
 
     const teachinginstance = await findTeachinginstanceByCoursekey(coursekey)
+    const isUserInCourse = await isUserAlreadyInCourse(user.id, coursekey)
     await console.log('teachinginstance: ', teachinginstance)
 
     console.log('user ', user)
     console.log('teachinginstance', teachinginstance)
     if (user && teachinginstance) {
-      console.log('Lisätään käyttäjä opetusinstanssiin...')
+      const isUserInCourse = await isUserAlreadyInCourse(user.id, coursekey)
+      if (isUserInCourse) {
+        return res.status(403).json({error: 'User is already in course'})
+      }
       const newInstances = { user_id: user.id, course_coursekey: coursekey }
       await findOrCreateUsersTeachinginstance(newInstances)
       const result = await findTeachingInstanceWithUserIdAndCoursekey(user.id, coursekey)
@@ -78,20 +95,31 @@ router.patch('/', passport.authenticate('jwt', { session: false }), async (req: 
       res.json(result3)
     } else if (!user) {
       console.log('no user')
-      res.status(400)
-      res.send('User not found!')
+      res.status(401).json({error: 'Unauthorized'})
     } else if (!teachinginstance) {
-      console.log('no teachingInstance')
-      res.status(400)
-      res.send('Teachinginstance not found!')
+      res.status(400).json({error: 'No such teaching instance'})
     } else {
       console.log('Nolla nothing')
-      res.status(400)
-      res.send('No user and teachinginstance found')
+      res.status(400).json({error: 'No user or teachinginstance found'})
     }
   } else {
-    res.status(400)
-    res.send('Very BAD request.')
+    res.status(400).json({error: 'No course key in body'})
+  }
+})
+
+router.delete('/:coursekey', passport.authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
+  const { user } = req
+  if (!user) {
+    return res.status(401).json({ error: 'unauthorized' })
+  }
+  const coursekey = req.params.coursekey.toLowerCase()
+
+  try {
+    await removeTeachingInstanceWithUserIdAndCoursekey(user.id, coursekey)
+    return res.status(204).json({ message: 'Update finished.' })
+  } catch (error) {
+    res.status(404)
+    res.json('')
   }
 })
 

@@ -44,9 +44,10 @@ FRONTEND_URL
 | --------- | ----------------------------------- | ------------------------------------------------------------------ |
 | GET       | `/users/auth`                       | Authentikoi käyttäjän              				       |
 | GET       | `/users/me`                         | Hakee kirjautuneen käyttäjän tiedot				       |
-| POST      | `/teachinginstances`		  | Luo uuden opetusinstanssin          			       |
+| POST      | `/teachinginstances`		  | Luo uuden opetusinstanssin					       |
 | GET       | `/teachinginstances/:teacher`       | Hakee opetusinstanssit joilla käyttäjä on omistaja tai opiskelija  |
-| PATCH     | `/teachinginstances` 		  | Liittää käyttäjän opetusinstanssiin 			       |
+| PATCH     | `/teachinginstances` 		  | Liittää käyttäjän opetusinstanssiin				       |
+| DELETE    | `/teachinginstances/:coursekey`     | Poistaa käyttäjän opetusinstanssista			       |
 | PUT       | `/trafficlights/:exercise_uuid`	  | Opiskelija klikkaa liikennevaloa...  			       |
 
 -------------
@@ -169,6 +170,21 @@ Response body format:
     ]
 }
 ```
+
+#### DELETE `/teachinginstances/:coursekey` (Poistu kurssilta klikkaaminen)
+- Poistaa käyttäjän opetusinstanssilta.
+
+Request body format: 
+```json
+{}
+```
+Response body format:
+```json
+{
+}
+```
+------------
+
 ------------
 #### PUT `/trafficlights/:exercise_uuid` (Liikennevalon klikkaaminen)
 - Luo uuden exercisen jos sellaista ei ole.

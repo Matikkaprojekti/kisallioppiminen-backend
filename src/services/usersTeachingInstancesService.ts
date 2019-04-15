@@ -27,6 +27,12 @@ export async function findOrCreateUsersTeachinginstance(newUsersTeachinginstance
   return instance
 }
 
+export async function removeTeachingInstanceWithUserIdAndCoursekey(userId: number, coursekey: string) {
+  await database('usersteachinginstances')
+    .delete()
+    .where({ user_id: userId, course_coursekey: coursekey })
+}
+
 export async function findTeachingInstanceWithUserIdAndCoursekey(userId: number, coursekey: string): Promise<ApiCourseInstanceObject> {
   return await database('usersteachinginstances')
     .select()
@@ -41,6 +47,7 @@ export async function findTeachingInstancesWithUserId(userId: number): Promise<A
     .select()
     .where({ user_id: userId })
     .innerJoin('teachinginstances', 'usersteachinginstances.course_coursekey', '=', 'teachinginstances.coursekey')
+    .orderBy('joindate', 'desc')
 
   const trafficlightPromise = database('trafficlights')
     .select()
@@ -48,6 +55,14 @@ export async function findTeachingInstancesWithUserId(userId: number): Promise<A
     .innerJoin('users', 'users.id', '=', 'trafficlights.user_id')
 
   return Promise.all([userTeachingInstancePromise, trafficlightPromise]).then(([userTeachingInstance, trafficlights]) => formatUserTeachingInstanceData(userTeachingInstance, trafficlights))
+}
+
+export function isUserAlreadyInCourse(userId: number, coursekey: string) {
+  return database('usersteachinginstances')
+    .count()
+    .where({ user_id: userId, course_coursekey: coursekey })
+    .first()
+    .then(({ count }) => count > 0)
 }
 
 function formatUserTeachingInstanceData(array: Array<UsersTeachinginstance & Teachinginstance>, trafficlights: Array<Trafficlight & User>): ApiCourseInstanceObject[] {
@@ -67,7 +82,7 @@ function formatUserTeachingInstanceData(array: Array<UsersTeachinginstance & Tea
           {
             firstname,
             lastname,
-            exercises: trafficlights.filter(({ coursekey: ck }) => ck === coursekey).map(({ exercise_uuid, status }) => ({ uuid: exercise_uuid, status: String(status) }))
+            exercises: trafficlights.filter(({ coursekey: ck }) => ck === coursekey).map(({ uuid, status }) => ({ uuid, status: String(status) }))
           }
         ]
       })

@@ -115,7 +115,7 @@ export async function findTeachingInstancesByOwnerId(owner_id: number) {
 
     async function getExerciseList(coursekey: string, id: number) {
       const exerciselist = await database('trafficlights')
-        .select('exercise_uuid', 'status')
+        .select('uuid', 'status')
         .where({ coursekey, user_id: id })
 
       console.log('tehtavalista:', exerciselist)
