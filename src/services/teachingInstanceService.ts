@@ -35,43 +35,107 @@ export async function findTeachinginstanceByCoursekey(coursekey: string): Promis
 }
 
 // tslint:disable-next-line
+/*
 export async function findTeachingInstancesByOwnerId(owner_id: number): Promise<ApiCourseInstanceObject[] | null> {
   const userTeachingInstancePromise = database('teachinginstances')
     .select()
     .where({ owner_id })
     .leftJoin('usersteachinginstances', 'usersteachinginstances.course_coursekey', '=', 'teachinginstances.coursekey')
 
-  const studentsPromise = database('trafficlights').leftJoin('users', 'users.id', '=', 'trafficlights.user_id')
+  const studentsPromise = database('users').leftJoin('trafficlights', 'trafficlights.user_id', '=', 'users.id')
 
   return Promise.all([userTeachingInstancePromise, studentsPromise]).then(([userTeachingInstances, students]) => formatTeachingInstanceQueryData(userTeachingInstances, students))
 }
 
 /**
  * This methods is not very scalable. Should be redone with more logical database queries.
- */
-function formatTeachingInstanceQueryData(userTeachingInstances: Array<Teachinginstance & UsersTeachingInstance>, students: Array<Trafficlight & User>) {
-  const courseInstanceMap = new Map<string, Teachinginstance>()
-  const studentsMap = new Map<string, ApiStudentObject[]>()
+ *//*
+function formatTeachingInstanceQueryData(userTeachingInstances: Array<Teachinginstance & UsersTeachingInstance>, students: Array<User & Trafficlight>) {
+const courseInstanceMap = new Map<string, Teachinginstance>()
+const studentsMap = new Map<string, ApiStudentObject[]>()
 
-  userTeachingInstances.forEach(row => {
-    courseInstanceMap.set(row.coursekey, R.pick(['coursekey', 'courseinfo', 'name', 'startdate', 'enddate', 'coursematerial_name', 'version', 'owner_id'], row))
-  })
+userTeachingInstances.forEach(row => {
+courseInstanceMap.set(row.coursekey, R.pick(['coursekey', 'courseinfo', 'name', 'startdate', 'enddate', 'coursematerial_name', 'version', 'owner_id'], row))
+})
 
-  students.forEach(({ id, firstname, lastname, coursekey }) => {
-    const userExercises = students.filter(({ user_id, coursekey: ck }) => user_id === id && ck === coursekey).map(({ exercise_uuid, status }) => ({ uuid: exercise_uuid, status: String(status) }))
-    if (studentsMap.has(coursekey)) {
-      studentsMap.get(coursekey).push({ firstname, lastname, exercises: userExercises })
-      return
-    }
-    studentsMap.set(coursekey, [{ firstname, lastname, exercises: userExercises }])
-  })
-
-  const apiCourseObject: ApiCourseInstanceObject[] = Array.from(courseInstanceMap.values()).map(courseInstance => ({
-    ...courseInstance,
-    startdate: String(courseInstance.startdate),
-    enddate: String(courseInstance.enddate),
-    students: studentsMap.get(courseInstance.coursekey) || [] // empty array for persistance
-  }))
-
-  return apiCourseObject
+students.forEach(({ id, firstname, lastname, coursekey }) => {
+const userExercises = students.filter(({ user_id, coursekey: ck }) => user_id === id && ck === coursekey).map(({ exercise_uuid, status }) => ({ uuid: exercise_uuid, status: String(status) }))
+if (studentsMap.has(coursekey)) {
+studentsMap.get(coursekey).push({ firstname, lastname, exercises: userExercises })
+return
 }
+studentsMap.set(coursekey, [{ firstname, lastname, exercises: userExercises }])
+})
+
+const apiCourseObject: ApiCourseInstanceObject[] = Array.from(courseInstanceMap.values()).map(courseInstance => ({
+...courseInstance,
+startdate: String(courseInstance.startdate),
+enddate: String(courseInstance.enddate),
+students: studentsMap.get(courseInstance.coursekey) || [] // empty array for persistance
+}))
+
+return apiCourseObject
+}
+*/
+// tslint:disable-next-line
+export async function findTeachingInstancesByOwnerId(owner_id: number) {
+  const usersInstances: Teachinginstance[] = await database('teachinginstances')
+    .select()
+    .where({ owner_id })
+
+  console.log('Tässä halutun käyttäjän instanssit: ', usersInstances)
+
+  return await Array.from(usersInstances.map(async instance => ({
+    ...instance,
+    startdate: String(instance.startdate),
+    enddate: String(instance.enddate),
+    students: await sisempitesti(instance.coursekey)
+  })))
+
+  async function sisempitesti(coursekey: string) {
+    const studentlist = await database('usersteachinginstances')
+      .select('firstname', 'lastname', 'id')
+      .where({ course_coursekey: coursekey })
+      .leftJoin('users', 'user_id', '=', 'users.id')
+
+    console.log('studenlist: ', studentlist)
+
+    const result = await studentlist.map(async (student: any) => {
+      return await {
+        firstname: student.firstname,
+        lastname: student.lastname,
+        exercises: await sisintesti(coursekey, student.id)
+      }
+    })
+
+    async function sisintesti(coursekey: string, id: number) {
+      const exerciselist = await database('trafficlights')
+        .select('exercise_uuid', 'status')
+        .where({ coursekey, user_id: id })
+
+      console.log('tehtavalista:', exerciselist)
+      return exerciselist
+    }
+
+    console.log('tässä pitäisi olla oppilaat tehtävineen:', result)
+    return await result
+  }
+}
+
+/*
+  const instanceWithStudents: ApiCourseInstanceObject[] = usersInstances.map(instance => {
+    const studentlist = await database('usersteachinginstances')
+      .select('user_id')
+      .where('course_coursekey', '=', instance.coursekey)
+      .leftJoin('users', 'user_id', '=', 'users.id')
+
+    instance.students = studentlist.map(student => {
+      const formattedStudent = {
+        firstname = student.firstname
+        lastname = student.lastname
+        exercises = []
+      }
+      return formattedStudent
+    })
+  })
+*/
