@@ -15,7 +15,7 @@ export async function findOrCreateUsersTeachinginstance(newUsersTeachinginstance
   const { user_id, course_coursekey } = newUsersTeachinginstance
 
   if (!instance) {
-    const temp = await database('usersteachinginstances').insert(newUsersTeachinginstance)
+    await database('usersteachinginstances').insert(newUsersTeachinginstance)
 
     const newlyCreatedinstance = await database('usersteachinginstances')
       .select()
@@ -28,7 +28,7 @@ export async function findOrCreateUsersTeachinginstance(newUsersTeachinginstance
 }
 
 export async function removeTeachingInstanceWithUserIdAndCoursekey(userId: number, coursekey: string) {
-  await database('usersteachinginstances')
+  return await database('usersteachinginstances')
     .delete()
     .where({ user_id: userId, course_coursekey: coursekey })
 }
