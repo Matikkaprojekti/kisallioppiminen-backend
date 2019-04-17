@@ -1,6 +1,4 @@
 import { Router, Request, Response } from 'express'
-import Exercise from '../models/Exercise'
-import Trafficlight from '../models/Trafficlight'
 import passport from 'passport'
 import { findOrCreateExercise } from '../services/exerciseService'
 import { updateOrCreateTrafficlight } from '../services/trafficlightService'
@@ -35,7 +33,7 @@ router.put('/:uuid', passport.authenticate('jwt', { session: false }), async (re
 
     return res.status(200).json({ message: 'Päivitys valmis' })
   } else {
-    return res.status(400).json({ error: 'Some request params are missing.' })
+    return res.status(400).json({ error: 'Jokin pyynnön parametri puuttuu' })
   }
 })
 
