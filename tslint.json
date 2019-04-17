@@ -14,6 +14,7 @@
     "arrow-parens": false,
     "indent": [true, "spaces", 2],
     "no-shadow": [false, "allow"],
+    "variable-name": [true, "allow-snake-case", "allow-pascal-case"],
     "no-shadowed-variable": [
       false,
       {

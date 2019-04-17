@@ -1,9 +1,6 @@
 import database from '../database'
 import Teachinginstance from '../models/TeachingInstance'
-import UsersTeachingInstance from '../models/UsersTeachingInstance'
-import Trafficlight from '../models/Trafficlight'
 import R from 'ramda'
-import User from '../models/User'
 import { ApiStudentObject, ApiCourseInstanceObject } from '../types/apiTypes'
 
 export async function findOrCreateTeachinginstance(newTeachingInstance: Teachinginstance): Promise<ApiCourseInstanceObject> {

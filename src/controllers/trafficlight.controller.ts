@@ -19,16 +19,14 @@ router.put('/:uuid', passport.authenticate('jwt', { session: false }), async (re
   }
 
   if (status && coursekey) {
-    // tslint:disable-next-line
-    const user_id = user.id;
+    const user_id = user.id
 
     // Luodaan exercise jos sitä ei ole olemassa...
     const newExercise = { uuid, coursekey }
     await findOrCreateExercise(newExercise)
 
     // Päivitetään tai luodaan uusi tietokantamerkintä tälle yksilöidylle nappulalle.
-    // tslint:disable-next-line
-    const newTrafficlightEntry = { uuid, coursekey, status, user_id };
+    const newTrafficlightEntry = { uuid, coursekey, status, user_id }
     await updateOrCreateTrafficlight(newTrafficlightEntry)
 
     return res.status(200).json({ message: 'Päivitys valmis' })
