@@ -73,27 +73,36 @@ Request body format:
 	"startdate":"28.12.2019",
 	"enddate":"30.1.2030",
 	"coursematerial_name":"MAY2",
-	"version":"1.2",
+	"version":"1.2"
 }
 ```
 Response body format:
 ```json
 {
     "coursekey": "uusitesti",
+    "name": "Kissalan matikka 2019",
+    "startdate": "28.12.2019",
+    "enddate": "Wed Jan 30 2030 00:00:00 GMT+0200 (EET)",
     "coursematerial_name": "MAY2",
     "version": "1.2",
-    "name": "Kissalan matikka 2019",
-    "startdate": "2019-12-27T22:00:00.000Z",
-    "enddate": "2030-01-29T22:00:00.000Z",
-    "owner_id":3
-    
+    "owner_id": 1,
+    "students": []
 }
 ```
 
+Mahdolliset virheviestit: 
+```
+res.status(401).json({ error: 'unauthorized' })
+res.status(403).json({ error: 'Käyttäjä on jo kurssilla' })
+res.status(401).json({ error: 'Luvaton pyyntö' })
+res.status(400).json({ error: 'Käyttäjää tai kurssia ei löytynyt' })
+res.status(400).json({ error: 'Kurssiavain puuttuu' })
+```
+
 ----------
-#### GET `/teachinginstances/:teacher`
-- `/teachinginstances/true` palauttaa kurssit, joilla käyttäjä on luonut.
-- `/teachinginstances/false` palauttaa kurssit, joille käyttäjä on liittynyt opiskelijaksi.
+#### GET `/teachinginstances?teacher=false`
+- `/teachinginstances?teacher=true` palauttaa kurssit, joilla käyttäjä on luonut.
+- `/teachinginstances?teacher=false` palauttaa kurssit, joille käyttäjä on liittynyt opiskelijaksi.
 
 Request body format: 
 ```json
@@ -103,50 +112,68 @@ Request body format:
 ```
 Response body format:
 ```json
-{
-    "teachinginstances": [
-        {
-            "coursekey": "uusitesti",
-            "coursematerial_name": "MAY2",
-            "version": "Kissalan lukio",
-            "name": "Kissalan matikka 2019",
-            "startdate": "2019-12-27T22:00:00.000Z",
-            "enddate": "2030-01-29T22:00:00.000Z",
-            "owner_id":3,
-            "students":[
-                {
-                    "firstname":"Kissa",
-                    "lastname":"Ankka",
-                    "exercises":[
-                        {
-                            "uuid":"123123-123123-123-123-1123123",
-                            "status":"red"
-                        },
-                        {
-                            "uuid":"asd1213-123123-123-123-1123123",
-                            "status":"green"
-                        }
-                    ]
-                },
-                {
-                    "firstname":"Peter",
-                    "lastname":"Pan",
-                    "exercises":[
-                        {
-                            "uuid":"123123-123123-123-123-1123123",
-                            "status":"yellow"
-                        },
-                        {
-                            "uuid":"asd1213-123123-123-123-1123123",
-                            "status":"red"
-                        }
-                    ]
-                 }
-            ]
+[
+    {
+        "coursekey": "kurssiavain",
+        "coursematerial_name": "MAY1 - Luvut ja lukujonot",
+        "version": "1",
+        "name": "kurssinimi",
+        "startdate": "Wed Apr 03 2019 00:00:00 GMT+0300 (EEST)",
+        "enddate": "Tue Apr 30 2019 00:00:00 GMT+0300 (EEST)",
+        "owner_id": 1,
+        "students": [
+            {
+                "firstname": "Kissa",
+                "lastname": "Ankka",
+                "exercises": [
+                    {
+                        "uuid": "12a9f39a-3b49-11e9-a38a-09f848b19644",
+                        "status": "green"
+                    },
+                    {
+                        "uuid": "12a9f399-3b49-11e9-a38a-09f848b19644",
+                        "status": "yellow"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "coursekey": "avainkurssi",
+        "coursematerial_name": "MAY1 - Luvut ja lukujonot",
+        "version": "1.1",
+        "name": "nimikurssi",
+        "startdate": "Wed Apr 03 2019 00:00:00 GMT+0300 (EEST)",
+        "enddate": "Wed Apr 24 2019 00:00:00 GMT+0300 (EEST)",
+        "owner_id": 1,
+        "students": [
+            {
+                "firstname": "Peter",
+                "lastname": "Pan",
+                "exercises": [
+                    {
+                        "uuid": "12a9f396-3b49-11e9-a38a-09f848b19644",
+                        "status": "red"
+                    },
+                    {
+                        "uuid": "12a9f397-3b49-11e9-a38a-09f848b19644",
+                        "status": "yellow"
+                    },
+                    {
+                        "uuid": "12a9f398-3b49-11e9-a38a-09f848b19644",
+                        "status": "yellow"
+                    }
+                ]
+            }
+        ]
+    }
+]
+```
+Mahdolliset virheviestit: 
+```
+res.status(401).json({ error: 'unauthorized' })
+res.status(400).json({ error: 'Virheelliset opettajan tiedot.' })
 
-        },
-    ]
-}
 ```
 
 ------------
@@ -162,24 +189,35 @@ Request body format:
 Response body format:
 ```json
 {
-    "coursekey": "kissalan lukio",
+    "coursekey": "uusitesti",
     "coursematerial_name": "MAY2",
-    "version": "Kissalan lukio",
+    "version": "1.2",
     "name": "Kissalan matikka 2019",
     "startdate": "2019-12-27T22:00:00.000Z",
     "enddate": "2030-01-29T22:00:00.000Z",
-    "owner_id":3,
-    "students":[
+    "owner_id": 1,
+    "students": [
         {
-            "firstname":"Kissa",
-            "lastname":"Ankka",
-            "exercises":[
-	    
+            "firstname": "Kissa",
+            "lastname": "Ankka",
+            "exercises": [
+                {}
             ]
         }
     ]
 }
 ```
+
+Mahdolliset virheviestit: 
+```
+res.status(400).json({ error: 'Kurssiavain puuttuu' })
+res.status(403).json({ error: 'Käyttäjä on jo kurssilla' })
+res.status(401).json({ error: 'Luvaton pyyntö' })
+res.status(400).json({ error: 'Kurssia ei löydy' })
+res.status(400).json({ error: 'Käyttäjää tai kurssia ei löytynyt' })
+res.status(400).json({ error: 'Virheellinen pyyntö!' })
+```
+        
 
 #### DELETE `/teachinginstances/:coursekey` (Poistu kurssilta klikkaaminen)
 - Poistaa käyttäjän opetusinstanssilta.
@@ -191,9 +229,15 @@ Request body format:
 Response body format:
 ```json
 {
+	"message": "Päivitys valmis."
 }
 ```
-------------
+
+Mahdolliset virheviestit:
+```
+res.status(401).json({ error: 'unauthorized' })
+res.status(404).json({ error: 'Virheellinen pyyntö!' })
+```
 
 ------------
 #### PUT `/trafficlights/:exercise_uuid` (Liikennevalon klikkaaminen)
@@ -204,14 +248,20 @@ Request body format:
 ```json
 {
 	"status":"red",
-	"coursekey":"Mäkelänrinteen lukio 9A"
+	"coursekey":"kurssiavain"
 }
 ```
 Response body format:
 ```json
 {
-	"message":"Update finished."
+	"message":"Päivitys valmis."
 }
+```
+
+Mahdolliset virheviestit:
+```
+res.status(401).json({ error: 'Unauthorized' })
+res.status(400).json({ error: 'Jokin pyynnön parametri puuttuu' })
 ```
 ------------
 
