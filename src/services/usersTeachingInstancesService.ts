@@ -28,7 +28,7 @@ export async function findOrCreateUsersTeachinginstance(newUsersTeachinginstance
 }
 
 export async function removeTeachingInstanceWithUserIdAndCoursekey(userId: number, coursekey: string) {
-  await database('usersteachinginstances')
+  return await database('usersteachinginstances')
     .delete()
     .where({ user_id: userId, course_coursekey: coursekey })
 }
