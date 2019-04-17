@@ -9,6 +9,7 @@ import {
   removeTeachingInstanceWithUserIdAndCoursekey,
   isUserAlreadyInCourse
 } from '../services/usersTeachingInstancesService'
+import { findTrafficlightsByUserIdAndCoursekey } from '../services/trafficlightService'
 import { resolve } from 'bluebird'
 
 const router: Router = Router()
@@ -84,7 +85,7 @@ router.patch('/', passport.authenticate('jwt', { session: false }), async (req: 
           {
             firstname: user.firstname,
             lastname: user.lastname,
-            exercises: [{}]
+            exercises: await findTrafficlightsByUserIdAndCoursekey(user.id, coursekey)
           }
         ]
       }

@@ -32,3 +32,11 @@ export async function updateOrCreateTrafficlight(newTrafficlight: Trafficlight):
     return updatedTrafficlight
   }
 }
+
+export async function findTrafficlightsByUserIdAndCoursekey(userId: string, coursekey: string): Promise<Array<{ uuid: string; status: string }>> {
+  const exerciselist: Array<Promise<{ uuid: string; status: string }>> = await database('trafficlights')
+    .select('uuid', 'status')
+    .where({ coursekey, user_id: userId })
+
+  return Promise.all(exerciselist)
+}
