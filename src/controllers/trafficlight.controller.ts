@@ -7,11 +7,8 @@ const router: Router = Router()
 
 // React to trafficlight click
 router.put('/:uuid', passport.authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
-  console.log('eka')
   const uuid = req.params.uuid // = tehtävän yksilövä UUID
   const { status, coursekey } = req.body
-  console.log('status: ', status)
-  console.log('coursekey: ', coursekey)
   const { user } = req
 
   if (!user) {

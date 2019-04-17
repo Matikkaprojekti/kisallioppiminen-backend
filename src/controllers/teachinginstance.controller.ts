@@ -21,13 +21,9 @@ router.post('/', passport.authenticate('jwt', { session: false }), async (req: R
     return res.status(401).json({ error: 'unauthorized' })
   }
 
-  // tslint:disable-next-line
-  const owner_id = user.id;
-
-  console.log('owner_id', owner_id)
+  const owner_id = user.id
 
   // Check that required params are present
-  // asddsa
   if (coursekey && coursematerial_name && version && name && startdate && enddate && owner_id) {
     const result = findOrCreateTeachinginstance({
       ...req.body,
@@ -47,7 +43,6 @@ router.post('/', passport.authenticate('jwt', { session: false }), async (req: R
 
 router.get('/:teacher', passport.authenticate('jwt', { session: false }), async (req, res) => {
   const { user } = req
-  // Check if auth
   if (!user) {
     return res.status(401).json({ error: 'unauthorized' })
   }
@@ -64,13 +59,11 @@ router.get('/:teacher', passport.authenticate('jwt', { session: false }), async 
     res.json(await findTeachingInstancesByOwnerId(user.id))
   } else {
     const result = await findTeachingInstancesWithUserId(user.id)
-    console.log(result)
     res.json(result)
   }
 })
 
 // Student join a teachinginstance with the key of the instance.
-// jotain
 router.patch('/', passport.authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
   const { user } = req
   if (!req.body.coursekey) {
@@ -78,11 +71,8 @@ router.patch('/', passport.authenticate('jwt', { session: false }), async (req: 
   }
   const coursekey = req.body.coursekey.toLowerCase()
 
-  console.log('Trimmed coursekey', coursekey)
-
   if (coursekey !== undefined) {
     const teachinginstance = await findTeachinginstanceByCoursekey(coursekey)
-    await console.log('teachinginstance: ', teachinginstance)
 
     if (user && teachinginstance) {
       const isUserInCourse = await isUserAlreadyInCourse(user.id, coursekey)
@@ -129,8 +119,6 @@ router.delete('/:coursekey', passport.authenticate('jwt', { session: false }), a
     return res.status(401).json({ error: 'unauthorized' })
   }
   const coursekey = req.params.coursekey.toLowerCase()
-  console.log('Kurssiavain = ', coursekey)
-  console.log('user = ', user)
 
   try {
     await removeTeachingInstanceWithUserIdAndCoursekey(user.id, coursekey)
