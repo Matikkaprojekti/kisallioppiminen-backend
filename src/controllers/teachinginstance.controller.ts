@@ -9,6 +9,7 @@ import {
   removeTeachingInstanceWithUserIdAndCoursekey,
   isUserAlreadyInCourse
 } from '../services/usersTeachingInstancesService'
+import { findTrafficlightsByUserIdAndCoursekey } from '../services/trafficlightService'
 import { resolve } from 'bluebird'
 
 const router: Router = Router()
@@ -59,7 +60,6 @@ router.patch('/', passport.authenticate('jwt', { session: false }), async (req: 
     console.log('Checking if coursekey and user_id exists...')
 
     const teachinginstance = await findTeachinginstanceByCoursekey(coursekey)
-    const isUserInCourse = await isUserAlreadyInCourse(user.id, coursekey)
     await console.log('teachinginstance: ', teachinginstance)
 
     console.log('user ', user)
@@ -85,7 +85,7 @@ router.patch('/', passport.authenticate('jwt', { session: false }), async (req: 
           {
             firstname: user.firstname,
             lastname: user.lastname,
-            exercises: [{}]
+            exercises: await findTrafficlightsByUserIdAndCoursekey(user.id, coursekey)
           }
         ]
       }
