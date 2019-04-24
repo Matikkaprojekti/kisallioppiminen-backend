@@ -82,3 +82,21 @@ export async function findTeachingInstancesByOwnerId(owner_id: number): Promise<
     return Promise.all(result)
   }
 }
+
+export async function deleteTeachingInstanceByCoursekey(coursekey: string) {
+  await database('teachinginstances')
+    .delete()
+    .where({ coursekey })
+
+  await database('usersteachinginstances')
+    .delete()
+    .where({ course_coursekey: coursekey })
+
+  await database('exercises')
+    .delete()
+    .where({ coursekey })
+
+  await database('trafficlights')
+    .delete()
+    .where({ coursekey })
+}
