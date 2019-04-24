@@ -100,3 +100,9 @@ export async function deleteTeachingInstanceByCoursekey(coursekey: string) {
     .delete()
     .where({ coursekey })
 }
+
+export async function findTeacherIdByCoursekey(coursekey: string) {
+  return await database('teachinginstance')
+    .select('owner_id')
+    .where({ coursekey })
+}

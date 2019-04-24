@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express'
 import passport from 'passport'
-import { findOrCreateTeachinginstance, findTeachinginstanceByCoursekey, findTeachingInstancesByOwnerId } from '../services/teachingInstanceService'
+import { findOrCreateTeachinginstance, findTeachinginstanceByCoursekey, findTeachingInstancesByOwnerId, deleteTeachingInstanceByCoursekey, findTeacherIdByCoursekey } from '../services/teachingInstanceService'
 import {
   findOrCreateUsersTeachinginstance,
   findTeachingInstancesWithUserId,
@@ -113,12 +113,32 @@ router.patch('/', passport.authenticate('jwt', { session: false }), async (req: 
   }
 })
 
-router.delete('/:coursekey', passport.authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
+router.delete('/:coursekey/:teacher', passport.authenticate('jwt', { session: false }), async (req: Request, res: Response) => {
   const { user } = req
   if (!user) {
     return res.status(401).json({ error: 'unauthorized' })
   }
+
+  // Check that 'teacher' parameter is properly given
+  const teacher = req.params.teacher
+  if (teacher !== 'true' && teacher !== 'false') {
+    return res.status(400).json({ error: 'Virheelliset roolitiedot.' })
+  }
+
   const coursekey = req.params.coursekey.toLowerCase()
+
+  if (teacher === 'true') {
+    const teacherId = findTeacherIdByCoursekey(coursekey)
+    if (teacherId !== user.id) {
+      return res.status(401).json({ error: 'unauthorized' })
+    }
+    try {
+      await deleteTeachingInstanceByCoursekey(coursekey)
+      return res.json({ message: 'Opetusinstanssin tiedot poistettu.' })
+    } catch (error) {
+      return res.status(404).json({ error: 'Virheellinen pyyntö!' })
+    }
+  }
 
   try {
     await removeTeachingInstanceWithUserIdAndCoursekey(user.id, coursekey)
