@@ -38,7 +38,7 @@ FRONTEND_URL
 
 ### Tietokannan kuvaus:
 
-![tietokantakuva](/readme_images/tietokanta_new.png)
+![tietokantakuva](/readme_images/tietokanta_latest.png)
 
 -----
 
