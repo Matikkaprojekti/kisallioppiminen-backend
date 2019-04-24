@@ -11,11 +11,14 @@ export async function findOrCreateTeachinginstance(newTeachingInstance: Teaching
     .first()
 
   if (!instance) {
+    // Make coursekey lowercase!
+    newTeachingInstance.coursekey = newTeachingInstance.coursekey.toLowerCase()
+
     await database('teachinginstances').insert(newTeachingInstance)
 
     const newlyCreatedinstance: Teachinginstance = await database('teachinginstances')
       .select()
-      .where({ coursekey })
+      .where({ coursekey: newTeachingInstance.coursekey })
       .first()
 
     return {
