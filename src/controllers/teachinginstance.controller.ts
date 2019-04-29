@@ -128,8 +128,9 @@ router.delete('/:coursekey/:teacher', passport.authenticate('jwt', { session: fa
   const coursekey = req.params.coursekey.toLowerCase()
 
   if (teacher === 'true') {
-    const teacherId = findTeacherIdByCoursekey(coursekey)
-    if (teacherId !== user.id) {
+    const teacherId = await findTeacherIdByCoursekey(coursekey)
+
+    if (teacherId.owner_id !== user.id) {
       return res.status(401).json({ error: 'unauthorized' })
     }
     try {

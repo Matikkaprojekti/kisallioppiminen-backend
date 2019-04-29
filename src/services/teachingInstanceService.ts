@@ -101,8 +101,9 @@ export async function deleteTeachingInstanceByCoursekey(coursekey: string) {
     .where({ coursekey })
 }
 
-export async function findTeacherIdByCoursekey(coursekey: string) {
-  return await database('teachinginstance')
+export async function findTeacherIdByCoursekey(coursekey: string): Promise<{ owner_id: number }> {
+  return await database('teachinginstances')
     .select('owner_id')
     .where({ coursekey })
+    .first()
 }
