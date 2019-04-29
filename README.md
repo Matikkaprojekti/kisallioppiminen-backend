@@ -269,13 +269,13 @@ res.status(400).json({ error: 'Jokin pyynnön parametri puuttuu' })
 
 ##### Haetaan kaikki käyttäjästä tallennetut tiedot:
 ```
-SELECT (id,googleid,firstname,lastname,banned,course_coursekey,joindate,uuid,status,coursematerial_name,version,startdate,enddate) FROM users LEFT JOIN usersteachinginstances ON users .id = usersteachinginstances.user_id LEFT JOIN trafficlights ON users .id = trafficlights.user_id LEFT JOIN teachinginstances ON users .id = teachinginstances.owner_id WHERE googleid='109788922809263212891';
+SELECT (id,googleid,firstname,lastname,banned,course_coursekey,joindate,uuid,status,coursematerial_name,version,startdate,enddate) FROM users LEFT JOIN usersteachinginstances ON users .id = usersteachinginstances.user_id LEFT JOIN trafficlights ON users .id = trafficlights.user_id LEFT JOIN teachinginstances ON users .id = teachinginstances.owner_id WHERE firstname='Haettavan käyttäjän etunimi' AND lastname='Haettavan käyttäjän sukunimi';
 ```
 ##### Poistetaan kaikki käyttäjään liittyvät tiedot:
 
 Ensin on selvitettävä käyttäjän id, etsimällä se käyttäen WHERE-operaattoria:
 ```
-SELECT (id) FROM users WHERE firstname='Etunimi tulee tähän' AND lastname='Sukunimi tulee tähän';
+SELECT (id) FROM users WHERE firstname='Poistettavan käyttäjän etunimi' AND lastname='Poistettavan käyttäjän sukunimi';
 ```
 #### Sitten poistetaan käyttäjän tiedot jokaisesta taulusta yksitellen:
 ```
