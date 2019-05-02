@@ -84,7 +84,12 @@ export async function findTeachingInstancesByOwnerId(owner_id: number): Promise<
 }
 
 export async function deleteTeachingInstanceByCoursekey(coursekey: string) {
-  await database('teachinginstances')
+
+  await database('trafficlights')
+    .delete()
+    .where({ coursekey })
+
+  await database('exercises')
     .delete()
     .where({ coursekey })
 
@@ -92,11 +97,7 @@ export async function deleteTeachingInstanceByCoursekey(coursekey: string) {
     .delete()
     .where({ course_coursekey: coursekey })
 
-  await database('exercises')
-    .delete()
-    .where({ coursekey })
-
-  await database('trafficlights')
+  await database('teachinginstances')
     .delete()
     .where({ coursekey })
 }
